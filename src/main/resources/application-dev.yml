@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/spring_recipe_dev
+    username: spring_recipe_dev_user
+    password: cute@ammu04
+    platform: mysql
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    database: mysql
+    show-sql: true
+#    properties:
+#      hibernate:
+#        hbm2ddl:
+#          delimiter: ";"
+#      javax:
+#        persistence:
+#          schema-generation:
+#            create-source: metadata
+#            scripts:
+#              action: create
+#              create-target: spring-recipe-database-create.sql
