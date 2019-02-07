@@ -23,7 +23,7 @@ public class IngredientRepositoryTest {
     @Test
     public void getIngredientById() {
         //Given
-        Long id = 1L;
+        String id = "1";
 
         //When
         Optional<Ingredient> ingredient = ingredientRepository.findById(id);
@@ -31,6 +31,6 @@ public class IngredientRepositoryTest {
         //then
         assertNotNull(ingredient);
         assertTrue(ingredient.isPresent());
-        assertEquals(ingredient.get().getId().longValue(), id.longValue());
+        assertEquals(ingredient.get().getId(), id);
     }
 }

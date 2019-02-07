@@ -16,7 +16,7 @@ public class IngredientServiceImpl implements IngredientService {
     private final IngredientMapper ingredientMapper = new IngredientMapper();
 
     @Override
-    public IngredientCommand findIngredientById(Long id) {
+    public IngredientCommand findIngredientById(String id) {
         final Ingredient ingredient = ingredientRepository.findById(id).orElse(null);
         if (ingredient == null) {
             throw new RuntimeException("No ingredient exists for the given Id " + id);
@@ -31,7 +31,7 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(String id) {
         ingredientRepository.deleteById(id);
     }
 }

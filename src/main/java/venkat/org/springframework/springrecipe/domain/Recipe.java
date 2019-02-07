@@ -3,6 +3,9 @@ package venkat.org.springframework.springrecipe.domain;
 
 import lombok.*;
 import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 
 import java.io.Serializable;
@@ -10,6 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 
+@Document
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -18,7 +22,8 @@ import java.util.Set;
 @ToString
 public class Recipe implements Serializable {
 
-    private Long id;
+    @Id
+    private String id;
 
     private String description;
 
@@ -45,10 +50,10 @@ public class Recipe implements Serializable {
     private Difficulty difficulty;
 
 
+    @DBRef
     private Set<Category> categories = new HashSet<>();
 
     public void setNotes(Notes notes) {
-        notes.setRecipe(this);
         this.notes = notes;
     }
 
@@ -58,7 +63,6 @@ public class Recipe implements Serializable {
         }
         if (CollectionUtils.isNotEmpty(ingredients)) {
             ingredients.forEach(ingredient -> {
-                ingredient.setRecipe(this);
                 this.ingredients.add(ingredient);
             });
         }

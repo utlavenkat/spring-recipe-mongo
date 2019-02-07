@@ -46,9 +46,9 @@ public class ImageControllerTest {
     @Test
     public void getImageForm() throws Exception {
         //Given
-        RecipeCommand recipeCommand = RecipeCommand.builder().id(1L).build();
+        RecipeCommand recipeCommand = RecipeCommand.builder().id("1").build();
 
-        when(recipeService.findRecipeById(anyLong())).thenReturn(recipeCommand);
+        when(recipeService.findRecipeById(anyString())).thenReturn(recipeCommand);
 
         //when
         ResultActions resultActions = mockMvc.perform(get("/recipe/1/image"));
@@ -58,7 +58,7 @@ public class ImageControllerTest {
                 .andExpect(model().attributeExists("recipe"))
                 .andExpect(view().name(VIEW_NAME_RECIPE_IMAGE_FORM));
 
-        verify(recipeService, times(1)).findRecipeById(anyLong());
+        verify(recipeService, times(1)).findRecipeById(anyString());
 
     }
 
@@ -74,7 +74,7 @@ public class ImageControllerTest {
         //then
         resultActions.andExpect(status().is3xxRedirection())
                 .andExpect(header().string("Location", "/recipe/1/view"));
-        verify(imageService, times(1)).saveImageFile(anyLong(), any());
+        verify(imageService, times(1)).saveImageFile(anyString(), any());
     }
 
     @Test
@@ -86,9 +86,9 @@ public class ImageControllerTest {
         for (Byte wrapperByte : fileText.getBytes()) {
             byteArray[i++] = wrapperByte;
         }
-        RecipeCommand recipeCommand = RecipeCommand.builder().id(1L).image(byteArray).build();
+        RecipeCommand recipeCommand = RecipeCommand.builder().id("1").image(byteArray).build();
 
-        when(recipeService.findRecipeById(anyLong())).thenReturn(recipeCommand);
+        when(recipeService.findRecipeById(anyString())).thenReturn(recipeCommand);
 
         //when
         MockHttpServletResponse servletResponse = mockMvc.perform(get("/recipe/1/recipeImage"))

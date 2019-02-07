@@ -40,8 +40,8 @@ public class IndexControllerTest {
 
     @Test
     public void testMockMVC() throws Exception {
-        val recipe1 = RecipeCommand.builder().id(1L).build();
-        val recipe2 = RecipeCommand.builder().id(2L).build();
+        val recipe1 = RecipeCommand.builder().id("1").build();
+        val recipe2 = RecipeCommand.builder().id("2").build();
         val mockedRecipeSet = new HashSet<RecipeCommand>();
         mockedRecipeSet.add(recipe1);
         mockedRecipeSet.add(recipe2);
@@ -56,8 +56,8 @@ public class IndexControllerTest {
 
     @Test
     public void getIndexPage() {
-        val recipe1 = RecipeCommand.builder().id(1L).build();
-        val recipe2 = RecipeCommand.builder().id(2L).build();
+        val recipe1 = RecipeCommand.builder().id("1").build();
+        val recipe2 = RecipeCommand.builder().id("2").build();
         val mockedRecipeSet = new HashSet<RecipeCommand>();
         mockedRecipeSet.add(recipe1);
         mockedRecipeSet.add(recipe2);

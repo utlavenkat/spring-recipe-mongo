@@ -52,7 +52,7 @@ public class IngredientControllerTest {
     @Test
     public void getRecipeIngredients() throws Exception {
         //Given
-        Long recipeId = 1L;
+        String recipeId = "1";
         RecipeCommand recipeCommand = RecipeCommand.builder().id(recipeId).build();
         when(recipeService.findRecipeById(recipeId)).thenReturn(recipeCommand);
 
@@ -64,7 +64,7 @@ public class IngredientControllerTest {
                 .andExpect(model().attributeExists("recipe"))
                 .andExpect(view().name(VIEW_NAME_INGREDIENT_LIST));
 
-        verify(recipeService, times(1)).findRecipeById(anyLong());
+        verify(recipeService, times(1)).findRecipeById(anyString());
     }
 
     @Test
@@ -73,7 +73,7 @@ public class IngredientControllerTest {
         Long id = 1L;
 
         //When
-        when(ingredientService.findIngredientById(anyLong())).thenReturn(IngredientCommand.builder().id(1L).build());
+        when(ingredientService.findIngredientById(anyString())).thenReturn(IngredientCommand.builder().id("1").build());
         ResultActions resultActions = mockMvc.perform(get("/recipe/ingredient/" + id + "/view"));
 
         //Then
@@ -81,19 +81,19 @@ public class IngredientControllerTest {
                 .andExpect(model().attributeExists("ingredient"))
                 .andExpect(model().size(1))
                 .andExpect(view().name(VIEW_NAME_INGREDIENT_SHOW));
-        verify(ingredientService, times(1)).findIngredientById(anyLong());
+        verify(ingredientService, times(1)).findIngredientById(anyString());
     }
 
     @Test
     public void editIngredientById() throws Exception {
         //Given
         Long id = 1L;
-        when(ingredientService.findIngredientById(anyLong())).thenReturn(IngredientCommand.builder().id(1L)
+        when(ingredientService.findIngredientById(anyString())).thenReturn(IngredientCommand.builder().id("1")
                 .description("Tomato").amount(BigDecimal.ONE).build());
 
         final Set<UnitOfMeasureCommand> unitOfMeasures = new HashSet<>(2);
-        unitOfMeasures.add(UnitOfMeasureCommand.builder().id(1L).uom("TableSpoon").build());
-        unitOfMeasures.add(UnitOfMeasureCommand.builder().id(2L).uom("Cup").build());
+        unitOfMeasures.add(UnitOfMeasureCommand.builder().id("1").uom("TableSpoon").build());
+        unitOfMeasures.add(UnitOfMeasureCommand.builder().id("2").uom("Cup").build());
 
         when(unitOfMeasureService.getAllUnitOfMeasures()).thenReturn(unitOfMeasures);
 
@@ -116,7 +116,7 @@ public class IngredientControllerTest {
                 .build();
         ObjectMapper mapper = new ObjectMapper();
         String jsonInString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(ingredientCommand);
-        ingredientCommand.setId(100L);
+        ingredientCommand.setId("100");
         when(ingredientService.save(any(IngredientCommand.class))).thenReturn(ingredientCommand);
 
         //when
@@ -136,8 +136,8 @@ public class IngredientControllerTest {
         //Given
         Long recipeId = 1L;
         final Set<UnitOfMeasureCommand> unitOfMeasures = new HashSet<>(2);
-        unitOfMeasures.add(UnitOfMeasureCommand.builder().id(1L).uom("TableSpoon").build());
-        unitOfMeasures.add(UnitOfMeasureCommand.builder().id(2L).uom("Cup").build());
+        unitOfMeasures.add(UnitOfMeasureCommand.builder().id("1").uom("TableSpoon").build());
+        unitOfMeasures.add(UnitOfMeasureCommand.builder().id("2").uom("Cup").build());
 
         when(unitOfMeasureService.getAllUnitOfMeasures()).thenReturn(unitOfMeasures);
 
@@ -150,16 +150,16 @@ public class IngredientControllerTest {
                 .andExpect(model().size(2))
                 .andExpect(model().attributeExists("ingredient", "uomList"));
         verify(unitOfMeasureService, times(1)).getAllUnitOfMeasures();
-        verify(ingredientService, times(0)).findIngredientById(anyLong());
+        verify(ingredientService, times(0)).findIngredientById(anyString());
 
     }
 
     @Test
     public void deleteIngredientById() throws Exception {
         //Given
-        final Long recipeId = 1L;
+        final String recipeId = "1";
         final Long ingredientId = 1L;
-        when(recipeService.findRecipeById(anyLong())).thenReturn(RecipeCommand.builder().id(recipeId).build());
+        when(recipeService.findRecipeById(anyString())).thenReturn(RecipeCommand.builder().id(recipeId).build());
 
         //when
         ResultActions resultActions = mockMvc.perform(get("/recipe/" + recipeId + "/ingredient/"
@@ -171,7 +171,7 @@ public class IngredientControllerTest {
                 .andExpect(model().size(1))
                 .andExpect(model().attributeExists("recipe"));
 
-        verify(ingredientService, times(1)).delete(anyLong());
-        verify(recipeService, times(1)).findRecipeById(anyLong());
+        verify(ingredientService, times(1)).delete(anyString());
+        verify(recipeService, times(1)).findRecipeById(anyString());
     }
 }

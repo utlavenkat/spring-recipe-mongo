@@ -28,17 +28,17 @@ public class RecipeMapperTest {
 
     @Test
     public void convertCommandToDomain() {
-        val unitOfMeasureCommand = UnitOfMeasureCommand.builder().id(1L).uom("Cup").build();
-        val recipeCommand = RecipeCommand.builder().id(1L).cookTime(10).description("Test Recipe")
+        val unitOfMeasureCommand = UnitOfMeasureCommand.builder().id("1").uom("Cup").build();
+        val recipeCommand = RecipeCommand.builder().id("1").cookTime(10).description("Test Recipe")
                 .difficulty(DifficultyCommand.EASY).directions("1.2.3.4").prepTime(20).servings(4).source("My Source")
                 .url("http://my.recipe.com").categories(new HashSet<>()).ingredients(new HashSet<>()).build();
-        recipeCommand.addCategory(CategoryCommand.builder().categoryName("Category 1").id(1L).build());
-        recipeCommand.addCategory(CategoryCommand.builder().categoryName("Category 2").id(2L).build());
+        recipeCommand.addCategory(CategoryCommand.builder().categoryName("Category 1").id("1").build());
+        recipeCommand.addCategory(CategoryCommand.builder().categoryName("Category 2").id("2").build());
 
-        recipeCommand.addIngredient(IngredientCommand.builder().id(1L).amount(BigDecimal.ONE).description("Test Ingredient1").unitOfMeasure(unitOfMeasureCommand).build());
-        recipeCommand.addIngredient(IngredientCommand.builder().id(2L).amount(BigDecimal.ONE).description("Test Ingredient2").unitOfMeasure(unitOfMeasureCommand).build());
+        recipeCommand.addIngredient(IngredientCommand.builder().id("1").amount(BigDecimal.ONE).description("Test Ingredient1").unitOfMeasure(unitOfMeasureCommand).build());
+        recipeCommand.addIngredient(IngredientCommand.builder().id("2").amount(BigDecimal.ONE).description("Test Ingredient2").unitOfMeasure(unitOfMeasureCommand).build());
 
-        NotesCommand notesCommand = NotesCommand.builder().id(1L).notes("Test Notes").recipe(recipeCommand).build();
+        NotesCommand notesCommand = NotesCommand.builder().id("1").notes("Test Notes").recipe(recipeCommand).build();
         recipeCommand.setNotes(notesCommand);
 
         val recipe = recipeMapper.convertCommandToDomain(recipeCommand);
@@ -59,7 +59,7 @@ public class RecipeMapperTest {
 
     @Test
     public void convertDomainToCommand() {
-        val recipe = Recipe.builder().id(1L).description("Test Recipe").cookTime(10).difficulty(Difficulty.EASY)
+        val recipe = Recipe.builder().id("1").description("Test Recipe").cookTime(10).difficulty(Difficulty.EASY)
                 .directions("1.2.3.4").prepTime(10).servings(4).source("Test Source")
                 .url("http://test.url.com").ingredients(new HashSet<>()).categories(new HashSet<>()).build();
         val recipeCommand = recipeMapper.convertDomainToCommand(recipe);

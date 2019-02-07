@@ -30,19 +30,19 @@ public class ImageController {
     private final ImageService imageService;
 
     @GetMapping(path = "/recipe/{recipeId}/image")
-    public String handleImagePost(@PathVariable final Long recipeId, final Model model) {
+    public String handleImagePost(@PathVariable final String recipeId, final Model model) {
         model.addAttribute("recipe", recipeService.findRecipeById(recipeId));
         return VIEW_NAME_RECIPE_IMAGE_FORM;
     }
 
     @PostMapping(path = "/recipe/{recipeId}/image")
-    public String handleImagePost(@PathVariable final Long recipeId, @RequestParam("file") MultipartFile file) {
+    public String handleImagePost(@PathVariable final String recipeId, @RequestParam("file") MultipartFile file) {
         imageService.saveImageFile(recipeId, file);
         return "redirect:/recipe/" + recipeId + "/view";
     }
 
     @GetMapping(path = "/recipe/{recipeId}/recipeImage")
-    public void renderRecipeImage(@PathVariable final Long recipeId, HttpServletResponse servletResponse) throws IOException {
+    public void renderRecipeImage(@PathVariable final String recipeId, HttpServletResponse servletResponse) throws IOException {
         log.info("renderRecipeImage, Input Recipe ID::" + recipeId);
         RecipeCommand recipeCommand = recipeService.findRecipeById(recipeId);
         if (recipeCommand.getImage() != null && recipeCommand.getImage().length > 0) {

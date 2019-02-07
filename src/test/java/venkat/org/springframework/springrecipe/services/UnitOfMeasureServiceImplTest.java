@@ -41,7 +41,7 @@ public class UnitOfMeasureServiceImplTest {
     public void getUnitOfMeasureByUom() {
         val uom = "Cup";
         val savedUnitOfMeasure = UnitOfMeasure.builder().uom(uom).build();
-        savedUnitOfMeasure.setId(1234L);
+        savedUnitOfMeasure.setId("1234");
         when(unitOfMeasureRepository.findByUom(uom)).thenReturn(Optional.of(savedUnitOfMeasure));
         UnitOfMeasureCommand unitOfMeasure = unitOfMeasureService.getUnitOfMeasureByUom(uom);
         Assert.assertNotNull(unitOfMeasure);
@@ -60,9 +60,9 @@ public class UnitOfMeasureServiceImplTest {
     @Test
     public void getUnitOfMeasureMap() {
         val uom1 = UnitOfMeasure.builder().uom("Cup").build();
-        uom1.setId(1L);
+        uom1.setId("1");
         val uom2 = UnitOfMeasure.builder().uom("Pint").build();
-        uom2.setId(2L);
+        uom2.setId("2");
         Set<UnitOfMeasure> unitOfMeasures = new HashSet<>(2);
         unitOfMeasures.add(uom1);
         unitOfMeasures.add(uom2);
@@ -76,8 +76,8 @@ public class UnitOfMeasureServiceImplTest {
     @Test
     public void getAllUnitOfMeasures() {
         final Set<UnitOfMeasure> unitOfMeasures = new HashSet<>(2);
-        unitOfMeasures.add(UnitOfMeasure.builder().id(1L).uom("TableSpoon").build());
-        unitOfMeasures.add(UnitOfMeasure.builder().id(2L).uom("Cup").build());
+        unitOfMeasures.add(UnitOfMeasure.builder().id("1").uom("TableSpoon").build());
+        unitOfMeasures.add(UnitOfMeasure.builder().id("2").uom("Cup").build());
 
         when(unitOfMeasureRepository.findAll()).thenReturn(unitOfMeasures);
 

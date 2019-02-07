@@ -34,8 +34,8 @@ public class ImageServiceImplTest {
         //Given
         MultipartFile mockMultipartFile = new MockMultipartFile("file", "testing.txt",
                 "text/plain", "My Yummy recipes".getBytes());
-        Recipe recipe = Recipe.builder().id(1L).build();
-        when(recipeRepository.findById(anyLong())).thenReturn(Optional.of(recipe));
+        Recipe recipe = Recipe.builder().id("1").build();
+        when(recipeRepository.findById(anyString())).thenReturn(Optional.of(recipe));
         ArgumentCaptor<Recipe> argumentCaptor = ArgumentCaptor.forClass(Recipe.class);
         //when
         imageService.saveImageFile(recipe.getId(), mockMultipartFile);

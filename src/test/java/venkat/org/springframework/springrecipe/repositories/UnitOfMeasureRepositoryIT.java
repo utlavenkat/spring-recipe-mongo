@@ -38,7 +38,7 @@ public class UnitOfMeasureRepositoryIT {
         val savedUnitOfMeasure = unitOfMeasureRepository.save(unitOfMeasure);
         assertNotNull(savedUnitOfMeasure);
         assertNotNull(savedUnitOfMeasure.getId());
-        assertTrue(savedUnitOfMeasure.getId() > 0);
+        assertTrue(savedUnitOfMeasure.getId() != null);
         assertEquals("TestUOM",savedUnitOfMeasure.getUom());
     }
 
@@ -53,34 +53,34 @@ public class UnitOfMeasureRepositoryIT {
         val savedUnitOfMeasures = unitOfMeasureRepository.saveAll(unitOfMeasures);
         savedUnitOfMeasures.forEach(unitOfMeasure -> {
             assertNotNull(unitOfMeasure.getId());
-            assertTrue(unitOfMeasure.getId() > 0);
+            assertTrue(unitOfMeasure.getId() != null);
         });
     }
 
     @Test
     public void testFindById_Valid() {
-        long idValue = 1L;
+        String idValue = "1";
         Optional<UnitOfMeasure> unitOfMeasure = unitOfMeasureRepository.findById(idValue);
         assertTrue(unitOfMeasure.isPresent());
-        assertEquals(idValue,unitOfMeasure.get().getId().longValue());
+        assertEquals(idValue,unitOfMeasure.get().getId());
     }
 
     @Test
     public void testFindById_Invalid() {
-        long idValue = 12345L;
+        String idValue = "12345";
         Optional<UnitOfMeasure> unitOfMeasure = unitOfMeasureRepository.findById(idValue);
         assertFalse(unitOfMeasure.isPresent());
     }
 
     @Test
     public void testExistsById_valid() {
-        long idValue = 1L;
+        String idValue = "1";
         assertTrue(unitOfMeasureRepository.existsById(idValue));
 
     }
     @Test
     public void testExistsById_Invalid() {
-        long idValue = 12345L;
+        String idValue = "12345";
         assertFalse(unitOfMeasureRepository.existsById(idValue));
     }
 
@@ -95,9 +95,9 @@ public class UnitOfMeasureRepositoryIT {
 
     @Test
     public void findAllById() {
-        Set<Long> idSet = new HashSet<>(2);
-        idSet.add(1L);
-        idSet.add(2L);
+        Set<String> idSet = new HashSet<>(2);
+        idSet.add("1");
+        idSet.add("2");
 
         Set<UnitOfMeasure> unitOfMeasures = new HashSet<>(2);
         unitOfMeasureRepository.findAllById(idSet).forEach(unitOfMeasures::add);

@@ -25,7 +25,7 @@ public class CategoryMapperTest {
 
     @Test
     public void convertCommandToDomain() {
-        val categoryCommand = CategoryCommand.builder().id(1L).categoryName("Test Category").build();
+        val categoryCommand = CategoryCommand.builder().id("1").categoryName("Test Category").build();
 
         val category = categoryMapper.convertCommandToDomain(categoryCommand);
 
@@ -37,7 +37,7 @@ public class CategoryMapperTest {
     @Test
     public void convertDomainToCommand() {
         val category = new Category();
-        category.setId(1L);
+        category.setId("1");
         category.setCategoryName("Test Category");
 
         val categoryCommand = categoryMapper.convertDomainToCommand(category);

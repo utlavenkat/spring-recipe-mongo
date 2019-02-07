@@ -31,7 +31,7 @@ public class RecipeServiceImpl implements RecipeService {
         return recipes;
     }
 
-    public RecipeCommand findRecipeById(final Long id) {
+    public RecipeCommand findRecipeById(final String id) {
         Optional<Recipe> recipe = recipeRepository.findById(id);
         if (!recipe.isPresent()) {
             throw new NotFoundException("Recipe not found for the ID value: " + id);
@@ -40,7 +40,7 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public void deleteRecipe(Long id) {
+    public void deleteRecipe(String id) {
         recipeRepository.deleteById(id);
     }
 }

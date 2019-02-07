@@ -17,7 +17,7 @@ import java.util.Set;
 @Builder
 @Data
 public class RecipeCommand {
-    private Long id;
+    private String id;
 
     @NotBlank
     private String description;

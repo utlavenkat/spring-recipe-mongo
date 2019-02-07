@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class NotesCommand {
-    private Long id;
+    private String id;
     private String notes;
     private RecipeCommand recipe;
 }

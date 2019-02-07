@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import venkat.org.springframework.springrecipe.domain.Recipe;
 
 @Repository
-public interface RecipeRepository extends CrudRepository<Recipe,Long> {
+public interface RecipeRepository extends CrudRepository<Recipe,String> {
 }

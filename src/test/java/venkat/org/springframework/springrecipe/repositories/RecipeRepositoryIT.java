@@ -20,27 +20,27 @@ public class RecipeRepositoryIT {
 
     @Test
     public void testFindById() {
-        val id = 1L;
+        val id = "1";
         val recipe = recipeRepository.findById(id);
         assertNotNull(recipe);
         assertTrue(recipe.isPresent());
-        assertEquals(id, recipe.get().getId().intValue());
+        assertEquals(id, recipe.get().getId());
     }
 
     @Test
     public void testFindById_Ivalid() {
-        val recipe = recipeRepository.findById(12345L);
+        val recipe = recipeRepository.findById("12345");
         assertFalse(recipe.isPresent());
     }
 
     @Test(expected = Exception.class)
     public void deleteById_invalid() {
-        recipeRepository.deleteById(12345L);
+        recipeRepository.deleteById("12345");
     }
 
     @Test
     public void deleteById() {
-        recipeRepository.deleteById(1L);
+        recipeRepository.deleteById("1");
     }
 
 }

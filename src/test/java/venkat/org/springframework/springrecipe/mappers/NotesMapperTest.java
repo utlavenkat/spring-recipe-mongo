@@ -27,7 +27,7 @@ public class NotesMapperTest {
 
     @Test
     public void convertCommandToDomain() {
-        val notesCommand = NotesCommand.builder().id(1L).notes("Test Notes").build();
+        val notesCommand = NotesCommand.builder().id("1").notes("Test Notes").build();
         val notes = notesMapper.convertCommandToDomain(notesCommand);
 
         assertNotNull(notes);
@@ -37,8 +37,8 @@ public class NotesMapperTest {
 
     @Test
     public void convertDomainToCommand() {
-        val notes = new Notes("Test Notes", new Recipe());
-        notes.setId(1L);
+        val notes = new Notes("Test Notes");
+        notes.setId("1");
 
         val notesCommand = notesMapper.convertDomainToCommand(notes);
 

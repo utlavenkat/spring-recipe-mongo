@@ -1,6 +1,7 @@
 package venkat.org.springframework.springrecipe.domain;
 
 import lombok.*;
+import org.springframework.data.annotation.Id;
 
 
 @NoArgsConstructor
@@ -9,15 +10,9 @@ import lombok.*;
 @Getter
 public class Notes {
 
-    private Long id;
+    @Id
+    private String id;
 
     @NonNull
     private String notes;
-
-    @NonNull
-    private Recipe recipe;
-
-    public void setRecipe(Recipe recipe) {
-        this.recipe = recipe;
-    }
 }

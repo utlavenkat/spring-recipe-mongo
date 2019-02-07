@@ -3,9 +3,9 @@ package venkat.org.springframework.springrecipe.services;
 import venkat.org.springframework.springrecipe.command.IngredientCommand;
 
 public interface IngredientService {
-    IngredientCommand findIngredientById(Long id);
+    IngredientCommand findIngredientById(String id);
 
     IngredientCommand save(IngredientCommand ingredientCommand);
 
-    void delete(final Long id);
+    void delete(final String id);
 }

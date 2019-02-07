@@ -1,6 +1,8 @@
 package venkat.org.springframework.springrecipe.domain;
 
 import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import java.math.BigDecimal;
 
@@ -12,16 +14,15 @@ import java.math.BigDecimal;
 @Builder
 public class Ingredient {
 
-    private Long id;
+    @Id
+    private String id;
 
     @NonNull
     private String description;
     @NonNull
     private BigDecimal amount;
 
-
-    private Recipe recipe;
-
     @NonNull
+    @DBRef
     private UnitOfMeasure unitOfMeasure;
 }

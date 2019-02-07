@@ -13,7 +13,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 public class CategoryCommand {
-    private Long id;
+    private String id;
     private String categoryName;
     private Set<RecipeCommand> recipes = new HashSet<>();
 }

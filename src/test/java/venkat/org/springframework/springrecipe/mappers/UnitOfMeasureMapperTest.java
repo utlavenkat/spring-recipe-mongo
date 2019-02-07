@@ -26,7 +26,7 @@ public class UnitOfMeasureMapperTest {
 
     @Test
     public void convertCommandToDomain() {
-        UnitOfMeasureCommand unitOfMeasureCommand = UnitOfMeasureCommand.builder().id(1L).uom("Cup").build();
+        UnitOfMeasureCommand unitOfMeasureCommand = UnitOfMeasureCommand.builder().id("1").uom("Cup").build();
 
         val unitOfMeasure = unitOfMeasureMapper.convertCommandToDomain(unitOfMeasureCommand);
         assertNotNull(unitOfMeasure);
@@ -37,7 +37,7 @@ public class UnitOfMeasureMapperTest {
 
     @Test
     public void convertDomainToCommand() {
-        UnitOfMeasure unitOfMeasure = UnitOfMeasure.builder().id(1L).uom("Cup").build();
+        UnitOfMeasure unitOfMeasure = UnitOfMeasure.builder().id("1").uom("Cup").build();
 
         val unitOfMeasureCommand = unitOfMeasureMapper.convertDomainToCommand(unitOfMeasure);
         assertNotNull(unitOfMeasureCommand);

@@ -21,13 +21,13 @@ public class IngredientServiceImplIT {
     @Test
     public void delete() {
         long initialSize = ingredientRepository.count();
-        ingredientRepository.deleteById(1L);
+        ingredientRepository.deleteById("1");
         long currentSize = ingredientRepository.count();
         assertEquals(initialSize - 1, currentSize);
     }
 
     @Test(expected = RuntimeException.class)
     public void delete_invalidId() {
-        ingredientRepository.deleteById(12345L);
+        ingredientRepository.deleteById("12345");
     }
 }

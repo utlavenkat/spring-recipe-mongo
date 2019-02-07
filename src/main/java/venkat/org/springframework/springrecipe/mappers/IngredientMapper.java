@@ -23,8 +23,6 @@ public class IngredientMapper {
             ingredient.setDescription(ingredientCommand.getDescription());
             ingredient.setAmount(ingredientCommand.getAmount());
             ingredient.setUnitOfMeasure(unitOfMeasureMapper.convertCommandToDomain(ingredientCommand.getUnitOfMeasure()));
-            Recipe recipe = Recipe.builder().id(ingredientCommand.getRecipeId()).build();
-            ingredient.setRecipe(recipe);
         }
         log.debug("Ingredient Domain ::" + ingredient);
         return ingredient;
@@ -38,7 +36,6 @@ public class IngredientMapper {
                     .description(ingredient.getDescription()).id(ingredient.getId())
                     .unitOfMeasure(unitOfMeasureMapper.convertDomainToCommand(ingredient.getUnitOfMeasure()))
                     .build();
-            ingredientCommand.setRecipeId(ingredient.getRecipe().getId());
         }
         log.debug("Ingredient Command ::" + ingredientCommand);
         return ingredientCommand;

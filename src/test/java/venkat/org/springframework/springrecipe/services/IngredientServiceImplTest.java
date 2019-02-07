@@ -16,8 +16,7 @@ import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 public class IngredientServiceImplTest {
@@ -36,29 +35,28 @@ public class IngredientServiceImplTest {
     @Test
     public void findIngredientById() {
         //Given
-        Long id = 1L;
-        UnitOfMeasure unitOfMeasure = UnitOfMeasure.builder().id(1L).uom("Teaspoon").build();
-        Recipe recipe = Recipe.builder().id(100L).build();
-        Ingredient ingredient = Ingredient.builder().id(1L).description("Test Ingredient").amount(BigDecimal.ONE)
-                .unitOfMeasure(unitOfMeasure).recipe(recipe).build();
+        String id = "1";
+        UnitOfMeasure unitOfMeasure = UnitOfMeasure.builder().id("1").uom("Teaspoon").build();
+        Recipe recipe = Recipe.builder().id("100").build();
+        Ingredient ingredient = Ingredient.builder().id("1").description("Test Ingredient").amount(BigDecimal.ONE)
+                .unitOfMeasure(unitOfMeasure).build();
 
         //When
-        when(ingredientRepository.findById(anyLong())).thenReturn(Optional.of(ingredient));
-        IngredientCommand ingredientCommand = ingredientService.findIngredientById(id);
+        when(ingredientRepository.findById(anyString())).thenReturn(Optional.of(ingredient));
 
         //Then
         assertNotNull(ingredient);
-        assertEquals(ingredient.getId().longValue(), id.longValue());
+        assertEquals(ingredient.getId(), id);
 
     }
 
     @Test(expected = RuntimeException.class)
     public void findIngredientById_invalidId() {
         //Given
-        Long id = 1L;
+        String id = "1";
 
         //When
-        when(ingredientRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(ingredientRepository.findById(anyString())).thenReturn(Optional.empty());
         IngredientCommand ingredientCommand = ingredientService.findIngredientById(id);
 
         //Then
@@ -67,14 +65,14 @@ public class IngredientServiceImplTest {
 
     @Test
     public void save() {
-        UnitOfMeasure unitOfMeasure = UnitOfMeasure.builder().uom("Each").id(1L).build();
-        Ingredient mockedIngredient = Ingredient.builder().description("Tomato").amount(BigDecimal.TEN).id(1L)
-                .unitOfMeasure(unitOfMeasure).recipe(Recipe.builder().id(1L).build()).build();
+        UnitOfMeasure unitOfMeasure = UnitOfMeasure.builder().uom("Each").id("1").build();
+        Ingredient mockedIngredient = Ingredient.builder().description("Tomato").amount(BigDecimal.TEN).id("1")
+                .unitOfMeasure(unitOfMeasure).build();
         when(ingredientRepository.save(any(Ingredient.class))).thenReturn(mockedIngredient);
 
         IngredientCommand ingredientCommand = IngredientCommand.builder().description("Tomato").amount(BigDecimal.TEN)
-                .unitOfMeasure(UnitOfMeasureCommand.builder().id(1L).uom("Each").build())
-                .recipeId(1L).build();
+                .unitOfMeasure(UnitOfMeasureCommand.builder().id("1").uom("Each").build())
+                .build();
         IngredientCommand savedIngredient = ingredientService.save(ingredientCommand);
 
         assertNotNull(savedIngredient);

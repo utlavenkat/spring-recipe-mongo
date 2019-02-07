@@ -46,13 +46,13 @@ public class RecipeServiceImplTest {
     @Test
     public void saveRecipe() {
 
-        NotesCommand recipeNotes = NotesCommand.builder().id(1234L).notes("Test Note").build();
-        UnitOfMeasureCommand unitOfMeasure = UnitOfMeasureCommand.builder().uom("Teaspoon").id(1L).build();
+        NotesCommand recipeNotes = NotesCommand.builder().id("1234").notes("Test Note").build();
+        UnitOfMeasureCommand unitOfMeasure = UnitOfMeasureCommand.builder().uom("Teaspoon").id("1").build();
         IngredientCommand ingredient = IngredientCommand.builder().amount(BigDecimal.ONE).unitOfMeasure(unitOfMeasure)
                 .description("Each").build();
         Set<IngredientCommand> ingredients = new HashSet<>(1);
         ingredients.add(ingredient);
-        RecipeCommand recipe = RecipeCommand.builder().id(1234L).notes(recipeNotes).prepTime(10).url("http://myrecipe.com")
+        RecipeCommand recipe = RecipeCommand.builder().id("1234").notes(recipeNotes).prepTime(10).url("http://myrecipe.com")
                 .difficulty(DifficultyCommand.HARD).source("My source").directions("My Directions").servings(3)
                 .cookTime(30).ingredients(ingredients).description("My Recipe").build();
         recipeNotes.setRecipe(recipe);
@@ -60,13 +60,13 @@ public class RecipeServiceImplTest {
 
         CategoryCommand category = new CategoryCommand();
         category.setCategoryName("MEXICAN");
-        category.setId(2L);
+        category.setId("2");
         //category.setRecipes(recipeSet);
         Set<CategoryCommand> categorySet = new HashSet<>();
         categorySet.add(category);
 
         recipe.setCategories(categorySet);
-        recipe.getIngredients().iterator().next().setId(1234L);
+        recipe.getIngredients().iterator().next().setId("1234");
         //recipeSet.add(recipe);
 
         when(recipeRepository.save(any(Recipe.class))).thenReturn(recipeMapper.convertCommandToDomain(recipe));
@@ -99,8 +99,8 @@ public class RecipeServiceImplTest {
 
     @Test
     public void getAllRecipes() {
-        val recipe1 = Recipe.builder().id(1L).build();
-        val recipe2 = Recipe.builder().id(2L).build();
+        val recipe1 = Recipe.builder().id("1").build();
+        val recipe2 = Recipe.builder().id("2").build();
 
         Set<Recipe> mockedRecipeSet = new HashSet<>();
         mockedRecipeSet.add(recipe1);
@@ -115,18 +115,18 @@ public class RecipeServiceImplTest {
 
     @Test
     public void findRecipeById() {
-        Long id = anyLong();
+        String id = anyString();
         when(recipeRepository.findById(id)).thenReturn(Optional.of(Recipe.builder().id(id).build()));
-        val recipe = recipeService.findRecipeById(1L);
+        val recipe = recipeService.findRecipeById("1");
         assertNotNull("Recipe should not be null", recipe);
         assertNotNull("Recipe ID should not be null", recipe.getId());
         assertEquals("Id value is not matching", id, recipe.getId());
-        verify(recipeRepository, times(1)).findById(anyLong());
+        verify(recipeRepository, times(1)).findById(anyString());
     }
 
     @Test(expected = NotFoundException.class)
     public void findRecipeById_Invalid() {
-        Long id = anyLong();
+        String id = anyString();
         when(recipeRepository.findById(id)).thenReturn(Optional.empty());
         RecipeCommand recipe = recipeService.findRecipeById(id);
         // assertNull("Recipe should be null", recipe);
@@ -136,7 +136,7 @@ public class RecipeServiceImplTest {
     @Test
     public void deleteRecipe() {
         //given
-        Long id = 1000L;
+        String id = "1000";
         //when
         recipeService.deleteRecipe(id);
         //then
@@ -147,7 +147,7 @@ public class RecipeServiceImplTest {
     @Test(expected = RuntimeException.class)
     public void deleteRecipe_invalidId() {
         //given
-        Long id = 1000L;
+        String id = "1000";
         doThrow(RuntimeException.class).when(recipeRepository).deleteById(id);
         //when
         recipeService.deleteRecipe(id);

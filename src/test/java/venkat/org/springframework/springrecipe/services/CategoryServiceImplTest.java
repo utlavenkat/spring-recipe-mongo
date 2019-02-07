@@ -40,7 +40,7 @@ public class CategoryServiceImplTest {
     public void testGetByCategoryName_Valid() {
         val categoryName = "AMERICAN";
         val mockedCategory = new Category();
-        mockedCategory.setId(1234L);
+        mockedCategory.setId("1234");
         mockedCategory.setCategoryName(categoryName);
 
         Assert.assertNotNull(categoryService);

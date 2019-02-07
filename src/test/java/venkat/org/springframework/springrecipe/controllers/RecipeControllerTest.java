@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.hamcrest.Matchers;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -53,8 +54,8 @@ public class RecipeControllerTest {
     @Test
     public void viewRecipe() throws Exception {
         //Given
-        RecipeCommand recipe = RecipeCommand.builder().id(1L).description("Test Recipe").build();
-        when(recipeService.findRecipeById(anyLong())).thenReturn(recipe);
+        RecipeCommand recipe = RecipeCommand.builder().id("1").description("Test Recipe").build();
+        when(recipeService.findRecipeById(anyString())).thenReturn(recipe);
 
         //when
         ResultActions resultActions = mockMvc.perform(get("/recipe/{id}/view", 1));
@@ -65,14 +66,16 @@ public class RecipeControllerTest {
         resultActions.andExpect(model().size(1));
         resultActions.andExpect(model().attributeExists("recipe"));
         resultActions.andExpect(model().attribute("recipe", recipe));
-        verify(recipeService, times(1)).findRecipeById(1L);
+        verify(recipeService, times(1)).findRecipeById("1");
     }
 
     @Test
+    @Ignore
+    //This is invalid test now
     public void viewRecipe_NumberFormatException() throws Exception {
         //Given
-        RecipeCommand recipe = RecipeCommand.builder().id(1L).description("Test Recipe").build();
-        when(recipeService.findRecipeById(anyLong())).thenReturn(recipe);
+        RecipeCommand recipe = RecipeCommand.builder().id("1").description("Test Recipe").build();
+        when(recipeService.findRecipeById(anyString())).thenReturn(recipe);
 
         //when
         ResultActions resultActions = mockMvc.perform(get("/recipe/{id}/view", "abc"));
@@ -88,7 +91,7 @@ public class RecipeControllerTest {
     @Test
     public void viewRecipeNotFound() throws Exception {
         //Given
-        when(recipeService.findRecipeById(anyLong())).thenThrow(NotFoundException.class);
+        when(recipeService.findRecipeById(anyString())).thenThrow(NotFoundException.class);
 
         //when
         ResultActions resultActions = mockMvc.perform(get("/recipe/{id}/view", 1));
@@ -97,14 +100,14 @@ public class RecipeControllerTest {
         resultActions.andExpect(status().isNotFound())
                 .andExpect(view().name(VIEW_NAME_ERROR_PAGE_404));
 
-        verify(recipeService, times(1)).findRecipeById(1L);
+        verify(recipeService, times(1)).findRecipeById("1");
     }
 
     @Test
     public void editRecipeForm() throws Exception {
         //Given
-        RecipeCommand recipe = RecipeCommand.builder().id(1L).description("Test Recipe").build();
-        when(recipeService.findRecipeById(anyLong())).thenReturn(recipe);
+        RecipeCommand recipe = RecipeCommand.builder().id("1").description("Test Recipe").build();
+        when(recipeService.findRecipeById(anyString())).thenReturn(recipe);
 
         //when
         ResultActions resultActions = mockMvc.perform(get("/recipe/{id}/edit", 1));
@@ -115,7 +118,7 @@ public class RecipeControllerTest {
         resultActions.andExpect(model().size(1));
         resultActions.andExpect(model().attributeExists("recipe"));
         resultActions.andExpect(model().attribute("recipe", recipe));
-        verify(recipeService, times(1)).findRecipeById(1L);
+        verify(recipeService, times(1)).findRecipeById("1");
     }
 
     @Test
@@ -130,7 +133,7 @@ public class RecipeControllerTest {
         resultActions.andExpect(model().size(1));
         resultActions.andExpect(model().attributeExists("recipe"));
         resultActions.andExpect(model().attribute("recipe", Matchers.notNullValue()));
-        verify(recipeService, times(0)).findRecipeById(anyLong());
+        verify(recipeService, times(0)).findRecipeById(anyString());
     }
 
     @Test
@@ -143,7 +146,7 @@ public class RecipeControllerTest {
         ObjectMapper mapper = new ObjectMapper();
         String jsonInString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(inputRecipeCommand);
         System.out.println(jsonInString);
-        inputRecipeCommand.setId(100L);
+        inputRecipeCommand.setId("100");
         when(recipeService.saveRecipe(any(RecipeCommand.class))).thenReturn(inputRecipeCommand);
 
         //when
@@ -168,7 +171,7 @@ public class RecipeControllerTest {
         ObjectMapper mapper = new ObjectMapper();
         String jsonInString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(inputRecipeCommand);
         System.out.println(jsonInString);
-        inputRecipeCommand.setId(100L);
+        inputRecipeCommand.setId("100");
         when(recipeService.saveRecipe(any(RecipeCommand.class))).thenReturn(inputRecipeCommand);
 
         //when
@@ -190,6 +193,6 @@ public class RecipeControllerTest {
         //then
         resultActions.andExpect(status().is3xxRedirection());
         resultActions.andExpect(view().name("redirect:/" + VIEW_NAME_INDEX));
-        verify(recipeService, times(1)).deleteRecipe(1L);
+        verify(recipeService, times(1)).deleteRecipe("1");
     }
 }
