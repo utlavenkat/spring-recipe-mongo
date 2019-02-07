@@ -7,7 +7,6 @@ import venkat.org.springframework.springrecipe.domain.Category;
 import venkat.org.springframework.springrecipe.mappers.CategoryMapper;
 import venkat.org.springframework.springrecipe.repositories.CategoryRepository;
 
-import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Service
@@ -17,7 +16,6 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryMapper categoryMapper = new CategoryMapper();
 
     @Override
-    @Transactional
     public CategoryCommand getByCategoryName(String categoryName) {
         CategoryCommand categoryCommand = null;
         Optional<Category> savedCategory = categoryRepository.findByCategoryName(categoryName);

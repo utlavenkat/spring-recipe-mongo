@@ -9,7 +9,6 @@ import venkat.org.springframework.springrecipe.exceptions.NotFoundException;
 import venkat.org.springframework.springrecipe.mappers.RecipeMapper;
 import venkat.org.springframework.springrecipe.repositories.RecipeRepository;
 
-import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -26,14 +25,12 @@ public class RecipeServiceImpl implements RecipeService {
         return recipeMapper.convertDomainToCommand(savedRecipe);
     }
 
-    @Transactional
     public Set<RecipeCommand> getAllRecipes() {
         Set<RecipeCommand> recipes = new HashSet<>();
         recipeRepository.findAll().forEach(recipe -> recipes.add(recipeMapper.convertDomainToCommand(recipe)));
         return recipes;
     }
 
-    @Transactional
     public RecipeCommand findRecipeById(final Long id) {
         Optional<Recipe> recipe = recipeRepository.findById(id);
         if (!recipe.isPresent()) {

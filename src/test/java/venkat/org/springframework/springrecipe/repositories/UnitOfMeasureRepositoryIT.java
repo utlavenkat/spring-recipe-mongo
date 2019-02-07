@@ -3,6 +3,7 @@ package venkat.org.springframework.springrecipe.repositories;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import java.util.Set;
 
 import static org.junit.Assert.*;
 
+@Ignore
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @Slf4j
