@@ -9,6 +9,7 @@ import venkat.org.springframework.springrecipe.domain.Difficulty;
 import venkat.org.springframework.springrecipe.domain.Recipe;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 import static org.junit.Assert.*;
@@ -31,7 +32,7 @@ public class RecipeMapperTest {
         val unitOfMeasureCommand = UnitOfMeasureCommand.builder().id("1").uom("Cup").build();
         val recipeCommand = RecipeCommand.builder().id("1").cookTime(10).description("Test Recipe")
                 .difficulty(DifficultyCommand.EASY).directions("1.2.3.4").prepTime(20).servings(4).source("My Source")
-                .url("http://my.recipe.com").categories(new HashSet<>()).ingredients(new HashSet<>()).build();
+                .url("http://my.recipe.com").categories(new HashSet<>()).ingredients(new ArrayList<>()).build();
         recipeCommand.addCategory(CategoryCommand.builder().categoryName("Category 1").id("1").build());
         recipeCommand.addCategory(CategoryCommand.builder().categoryName("Category 2").id("2").build());
 

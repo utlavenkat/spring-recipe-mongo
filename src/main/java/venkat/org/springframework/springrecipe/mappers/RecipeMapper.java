@@ -3,6 +3,7 @@ package venkat.org.springframework.springrecipe.mappers;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.util.StringUtils;
 import venkat.org.springframework.springrecipe.command.CategoryCommand;
 import venkat.org.springframework.springrecipe.command.DifficultyCommand;
 import venkat.org.springframework.springrecipe.command.IngredientCommand;
@@ -12,6 +13,8 @@ import venkat.org.springframework.springrecipe.domain.Difficulty;
 import venkat.org.springframework.springrecipe.domain.Ingredient;
 import venkat.org.springframework.springrecipe.domain.Recipe;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -34,6 +37,9 @@ public class RecipeMapper {
                 .cookTime(recipeCommand.getCookTime()).servings(recipeCommand.getServings())
                 .directions(recipeCommand.getDirections()).source(recipeCommand.getSource()).url(recipeCommand.getUrl())
                 .prepTime(recipeCommand.getPrepTime()).image(recipeCommand.getImage()).build();
+        if(StringUtils.isEmpty(recipeCommand.getId())) {
+            recipe.setId(null);
+        }
         recipe.setNotes(notesMapper.convertCommandToDomain(recipeCommand.getNotes()));
         if (recipeCommand.getDifficulty() != null) {
             recipe.setDifficulty(Difficulty.valueOf(recipeCommand.getDifficulty().name()));
@@ -70,7 +76,7 @@ public class RecipeMapper {
 
         if (CollectionUtils.isNotEmpty(recipe.getIngredients())) {
             Set<IngredientCommand> ingredients = recipe.getIngredients().stream().map(ingredient -> ingredientMapper.convertDomainToCommand(ingredient)).collect(Collectors.toSet());
-            recipeCommand.setIngredients(ingredients);
+            recipeCommand.setIngredients(new ArrayList<>(ingredients));
         }
 
         if (CollectionUtils.isNotEmpty(recipe.getCategories())) {

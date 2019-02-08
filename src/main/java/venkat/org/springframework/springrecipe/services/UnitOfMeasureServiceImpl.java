@@ -43,4 +43,9 @@ public class UnitOfMeasureServiceImpl implements UnitOfMeasureService {
                 .convertDomainToCommand(unitOfMeasure)));
         return unitOfMeasureCommands;
     }
+
+    @Override
+    public void save(UnitOfMeasure uom) {
+        unitOfMeasureRepository.save(uom);
+    }
 }

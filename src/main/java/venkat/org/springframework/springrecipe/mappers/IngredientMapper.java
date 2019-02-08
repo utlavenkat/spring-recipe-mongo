@@ -1,6 +1,7 @@
 package venkat.org.springframework.springrecipe.mappers;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
 import venkat.org.springframework.springrecipe.command.IngredientCommand;
 import venkat.org.springframework.springrecipe.domain.Ingredient;
 import venkat.org.springframework.springrecipe.domain.Recipe;
@@ -19,7 +20,9 @@ public class IngredientMapper {
         Ingredient ingredient = null;
         if (ingredientCommand != null) {
             ingredient = new Ingredient();
-            ingredient.setId(ingredientCommand.getId());
+            if(!StringUtils.isEmpty(ingredientCommand.getId())) {
+                ingredient.setId(ingredientCommand.getId());
+            }
             ingredient.setDescription(ingredientCommand.getDescription());
             ingredient.setAmount(ingredientCommand.getAmount());
             ingredient.setUnitOfMeasure(unitOfMeasureMapper.convertCommandToDomain(ingredientCommand.getUnitOfMeasure()));

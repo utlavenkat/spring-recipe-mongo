@@ -73,22 +73,22 @@ public class IngredientControllerTest {
         Long id = 1L;
 
         //When
-        when(ingredientService.findIngredientById(anyString())).thenReturn(IngredientCommand.builder().id("1").build());
-        ResultActions resultActions = mockMvc.perform(get("/recipe/ingredient/" + id + "/view"));
+        when(ingredientService.findByRecipeIdAndIngredientId(anyString(),anyString())).thenReturn(IngredientCommand.builder().id("1").build());
+        ResultActions resultActions = mockMvc.perform(get("/recipe/1234/ingredient/" + id + "/view"));
 
         //Then
         resultActions.andExpect(status().isOk())
                 .andExpect(model().attributeExists("ingredient"))
                 .andExpect(model().size(1))
                 .andExpect(view().name(VIEW_NAME_INGREDIENT_SHOW));
-        verify(ingredientService, times(1)).findIngredientById(anyString());
+        verify(ingredientService, times(1)).findByRecipeIdAndIngredientId(anyString(),anyString());
     }
 
     @Test
     public void editIngredientById() throws Exception {
         //Given
         Long id = 1L;
-        when(ingredientService.findIngredientById(anyString())).thenReturn(IngredientCommand.builder().id("1")
+        when(ingredientService.findByRecipeIdAndIngredientId(anyString(),anyString())).thenReturn(IngredientCommand.builder().id("1")
                 .description("Tomato").amount(BigDecimal.ONE).build());
 
         final Set<UnitOfMeasureCommand> unitOfMeasures = new HashSet<>(2);
@@ -99,7 +99,7 @@ public class IngredientControllerTest {
 
 
         //when
-        ResultActions resultActions = mockMvc.perform(get("/recipe/ingredient/" + id + "/edit"));
+        ResultActions resultActions = mockMvc.perform(get("/recipe/1234/ingredient/" + id + "/edit"));
 
         //then
         resultActions.andExpect(status().isOk())
@@ -113,19 +113,18 @@ public class IngredientControllerTest {
 
         //Given
         IngredientCommand ingredientCommand = IngredientCommand.builder().amount(BigDecimal.ONE).description("Tomato")
-                .build();
+                .recipeId("1234").build();
         ObjectMapper mapper = new ObjectMapper();
         String jsonInString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(ingredientCommand);
         ingredientCommand.setId("100");
         when(ingredientService.save(any(IngredientCommand.class))).thenReturn(ingredientCommand);
 
         //when
-        ResultActions resultActions = mockMvc.perform(post("/recipe/ingredient").content(jsonInString));
+        ResultActions resultActions = mockMvc.perform(post("/recipe/ingredient").param("recipeId","1234").content(jsonInString));
 
         //then
         resultActions.andExpect(status().is3xxRedirection());
-        resultActions.andExpect(view().name("redirect:/recipe/ingredient/" + ingredientCommand
-                .getId().toString() + "/view"));
+        resultActions.andExpect(view().name("redirect:/recipe/1234/ingredients"));
         verify(ingredientService, times(1)).save(any(IngredientCommand.class));
 
     }
@@ -150,8 +149,6 @@ public class IngredientControllerTest {
                 .andExpect(model().size(2))
                 .andExpect(model().attributeExists("ingredient", "uomList"));
         verify(unitOfMeasureService, times(1)).getAllUnitOfMeasures();
-        verify(ingredientService, times(0)).findIngredientById(anyString());
-
     }
 
     @Test
@@ -166,12 +163,12 @@ public class IngredientControllerTest {
                 + ingredientId + "/delete"));
 
         //then
-        resultActions.andExpect(status().isOk())
-                .andExpect(view().name(VIEW_NAME_INGREDIENT_LIST))
+        resultActions.andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/recipe/"+recipeId+"/ingredients"))
                 .andExpect(model().size(1))
                 .andExpect(model().attributeExists("recipe"));
 
-        verify(ingredientService, times(1)).delete(anyString());
+        verify(ingredientService, times(1)).deleteById(anyString(),anyString());
         verify(recipeService, times(1)).findRecipeById(anyString());
     }
 }

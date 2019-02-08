@@ -44,6 +44,7 @@ public class Recipe implements Serializable {
 
     private Notes notes;
 
+
     private Set<Ingredient> ingredients = new HashSet<>();
 
 
@@ -66,5 +67,12 @@ public class Recipe implements Serializable {
                 this.ingredients.add(ingredient);
             });
         }
+    }
+
+    public void addIngredient(Ingredient ingredient) {
+        if (this.ingredients == null) {
+            this.ingredients = new HashSet<>();
+        }
+         ingredients.add(ingredient);
     }
 }

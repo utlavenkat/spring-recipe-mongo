@@ -7,7 +7,6 @@ import org.junit.Test;
 import venkat.org.springframework.springrecipe.command.IngredientCommand;
 import venkat.org.springframework.springrecipe.command.UnitOfMeasureCommand;
 import venkat.org.springframework.springrecipe.domain.Ingredient;
-import venkat.org.springframework.springrecipe.domain.Recipe;
 import venkat.org.springframework.springrecipe.domain.UnitOfMeasure;
 
 import java.math.BigDecimal;
@@ -50,8 +49,13 @@ public class IngredientMapperTest {
     @Test
     public void convertDomainToCommand() {
         val unitOfMeasure = UnitOfMeasure.builder().id("1").uom("Cup").build();
-        val ingredient = Ingredient.builder().description("Test Ingredient").amount(BigDecimal.TEN).id("1")
-                .unitOfMeasure(unitOfMeasure).build();
+        val ingredient = new Ingredient();
+
+        ingredient.setDescription("Test Ingredient");
+        ingredient.setAmount(BigDecimal.TEN);
+        ingredient.setId("1");
+        ingredient.setUnitOfMeasure(unitOfMeasure);
+
         val ingredientCommand = ingredientMapper.convertDomainToCommand(ingredient);
 
         assertNotNull(ingredientCommand);
@@ -65,6 +69,4 @@ public class IngredientMapperTest {
         assertEquals(unitOfMeasureCommand.getId(), unitOfMeasure.getId());
 
     }
-
-
 }
