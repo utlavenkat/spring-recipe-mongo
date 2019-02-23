@@ -1,5 +1,6 @@
 package venkat.org.springframework.springrecipe.repositories.reactive;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,6 +26,10 @@ public class CategoryReactiveRepositoryTestIT {
         Category category = new Category();
         category.setCategoryName("Category 1");
         categoryReactiveRepository.save(category).block();
+    }
+    @After
+    public void tearDown() {
+        categoryReactiveRepository.deleteAll().block();
     }
 
     @Test

@@ -54,18 +54,15 @@ public class RecipeServiceImplTest {
                 .difficulty(DifficultyCommand.HARD).source("My source").directions("My Directions").servings(3)
                 .cookTime(30).ingredients(ingredients).description("My Recipe").build();
         recipeNotes.setRecipe(recipe);
-        //Set<RecipeCommand> recipeSet = new HashSet<>();
 
         CategoryCommand category = new CategoryCommand();
         category.setCategoryName("MEXICAN");
         category.setId("2");
-        //category.setRecipes(recipeSet);
         Set<CategoryCommand> categorySet = new HashSet<>();
         categorySet.add(category);
 
         recipe.setCategories(categorySet);
         recipe.getIngredients().iterator().next().setId("1234");
-        //recipeSet.add(recipe);
 
         when(recipeRepository.save(any(Recipe.class))).thenReturn(recipeMapper.convertCommandToDomain(recipe));
 
@@ -127,7 +124,6 @@ public class RecipeServiceImplTest {
         String id = anyString();
         when(recipeRepository.findById(id)).thenReturn(Optional.empty());
         RecipeCommand recipe = recipeService.findRecipeById(id);
-        // assertNull("Recipe should be null", recipe);
         verify(recipeRepository, times(1)).findById(id);
     }
 

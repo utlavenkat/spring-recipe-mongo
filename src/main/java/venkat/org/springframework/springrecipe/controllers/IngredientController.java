@@ -50,7 +50,7 @@ public class IngredientController {
         IngredientCommand ingredientCommand = ingredientService.findByRecipeIdAndIngredientId(recipeId,id);
         ingredientCommand.setRecipeId(recipeId);
         model.addAttribute("ingredient", ingredientCommand);
-        model.addAttribute("uomList", unitOfMeasureService.getAllUnitOfMeasures());
+        model.addAttribute("uomList", unitOfMeasureService.getAllUnitOfMeasures().collectList().block());
         log.info(" Ingredient Object::" + ingredientCommand);
         return VIEW_NAME_INGREDIENT_FORM;
     }
@@ -68,7 +68,7 @@ public class IngredientController {
         final IngredientCommand ingredientCommand = IngredientCommand.builder().recipeId(id)
                 .unitOfMeasure(UnitOfMeasureCommand.builder().build()).build();
         model.addAttribute("ingredient", ingredientCommand);
-        model.addAttribute("uomList", unitOfMeasureService.getAllUnitOfMeasures());
+        model.addAttribute("uomList", unitOfMeasureService.getAllUnitOfMeasures().collectList().block());
         return VIEW_NAME_INGREDIENT_FORM;
     }
 

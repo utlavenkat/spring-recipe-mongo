@@ -1,16 +1,12 @@
 package venkat.org.springframework.springrecipe.services;
 
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import venkat.org.springframework.springrecipe.command.UnitOfMeasureCommand;
 import venkat.org.springframework.springrecipe.domain.UnitOfMeasure;
 
-import java.util.Map;
-import java.util.Set;
-
 public interface UnitOfMeasureService {
-    UnitOfMeasureCommand getUnitOfMeasureByUom(String uom);
-
-    Map<String, UnitOfMeasureCommand> getUnitOfMeasureMap();
-
-    Set<UnitOfMeasureCommand> getAllUnitOfMeasures();
+    Mono<UnitOfMeasureCommand> getUnitOfMeasureByUom(String uom);
+    Flux<UnitOfMeasureCommand> getAllUnitOfMeasures();
     void save(UnitOfMeasure uom);
 }

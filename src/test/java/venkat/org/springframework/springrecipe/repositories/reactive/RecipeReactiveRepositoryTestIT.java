@@ -1,5 +1,6 @@
 package venkat.org.springframework.springrecipe.repositories.reactive;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +22,12 @@ public class RecipeReactiveRepositoryTestIT {
     public void setUp() {
         recipeReactiveRepository.deleteAll().block();
     }
+
+    @After
+    public void delete() {
+        recipeReactiveRepository.deleteAll().block();
+    }
+
 
     @Test
     public void testSaveRecipe() {

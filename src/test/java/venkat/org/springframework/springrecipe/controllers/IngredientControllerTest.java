@@ -8,6 +8,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import reactor.core.publisher.Flux;
 import venkat.org.springframework.springrecipe.command.IngredientCommand;
 import venkat.org.springframework.springrecipe.command.RecipeCommand;
 import venkat.org.springframework.springrecipe.command.UnitOfMeasureCommand;
@@ -91,11 +92,10 @@ public class IngredientControllerTest {
         when(ingredientService.findByRecipeIdAndIngredientId(anyString(),anyString())).thenReturn(IngredientCommand.builder().id("1")
                 .description("Tomato").amount(BigDecimal.ONE).build());
 
-        final Set<UnitOfMeasureCommand> unitOfMeasures = new HashSet<>(2);
-        unitOfMeasures.add(UnitOfMeasureCommand.builder().id("1").uom("TableSpoon").build());
-        unitOfMeasures.add(UnitOfMeasureCommand.builder().id("2").uom("Cup").build());
+        UnitOfMeasureCommand uom1 = UnitOfMeasureCommand.builder().id("1").uom("TableSpoon").build();
+        UnitOfMeasureCommand uom2 = UnitOfMeasureCommand.builder().id("2").uom("Cup").build();
 
-        when(unitOfMeasureService.getAllUnitOfMeasures()).thenReturn(unitOfMeasures);
+        when(unitOfMeasureService.getAllUnitOfMeasures()).thenReturn(Flux.just(uom1,uom2));
 
 
         //when
@@ -134,11 +134,10 @@ public class IngredientControllerTest {
     public void newIngredientForm() throws Exception {
         //Given
         Long recipeId = 1L;
-        final Set<UnitOfMeasureCommand> unitOfMeasures = new HashSet<>(2);
-        unitOfMeasures.add(UnitOfMeasureCommand.builder().id("1").uom("TableSpoon").build());
-        unitOfMeasures.add(UnitOfMeasureCommand.builder().id("2").uom("Cup").build());
+        UnitOfMeasureCommand uom1 = UnitOfMeasureCommand.builder().id("1").uom("TableSpoon").build();
+        UnitOfMeasureCommand uom2 = UnitOfMeasureCommand.builder().id("2").uom("Cup").build();
 
-        when(unitOfMeasureService.getAllUnitOfMeasures()).thenReturn(unitOfMeasures);
+        when(unitOfMeasureService.getAllUnitOfMeasures()).thenReturn(Flux.just(uom1,uom2));
 
         //when
         final ResultActions resultActions = mockMvc.perform(get("/recipe/" + recipeId + "/ingredient/new"));
