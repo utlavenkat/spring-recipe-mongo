@@ -1,24 +1,27 @@
 package venkat.org.springframework.springrecipe.bootstrap;
 
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Profile;
+
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import venkat.org.springframework.springrecipe.command.*;
+
 import venkat.org.springframework.springrecipe.domain.*;
 import venkat.org.springframework.springrecipe.repositories.CategoryRepository;
 import venkat.org.springframework.springrecipe.repositories.RecipeRepository;
 import venkat.org.springframework.springrecipe.repositories.UnitOfMeasureRepository;
-import venkat.org.springframework.springrecipe.services.CategoryService;
-import venkat.org.springframework.springrecipe.services.RecipeService;
-import venkat.org.springframework.springrecipe.services.UnitOfMeasureService;
+import venkat.org.springframework.springrecipe.repositories.reactive.CategoryReactiveRepository;
+import venkat.org.springframework.springrecipe.repositories.reactive.RecipeReactiveRepository;
+import venkat.org.springframework.springrecipe.repositories.reactive.UnitOfMeasureReactiveRepository;
+
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
 import java.util.Optional;
 
 @Component
@@ -29,7 +32,14 @@ public class DataLoaderDefault implements CommandLineRunner {
     private final RecipeRepository recipeRepository;
     private final UnitOfMeasureRepository unitOfMeasureRepository;
 
-    private Map<String, UnitOfMeasureCommand> unitOfMeasureCommandMap;
+    @Autowired
+    private UnitOfMeasureReactiveRepository unitOfMeasureReactiveRepository;
+
+    @Autowired
+    private CategoryReactiveRepository categoryReactiveRepository;
+
+    @Autowired
+    private RecipeReactiveRepository recipeReactiveRepository;
 
     @Override
     @Transactional
@@ -43,6 +53,10 @@ public class DataLoaderDefault implements CommandLineRunner {
         if(recipeRepository.count() == 0) {
             recipeRepository.saveAll(getRecipes());
         }
+        log.info("UOM Count::"+unitOfMeasureReactiveRepository.count().block().toString());
+        log.info("Category Count::"+categoryReactiveRepository.count().block().toString());
+        log.info("Recipe Count::"+recipeReactiveRepository.count().block().toString());
+
         log.debug("Loading Bootstrap Data");
     }
 

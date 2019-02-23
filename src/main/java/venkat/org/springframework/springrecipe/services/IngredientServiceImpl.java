@@ -7,7 +7,6 @@ import venkat.org.springframework.springrecipe.command.IngredientCommand;
 import venkat.org.springframework.springrecipe.domain.Ingredient;
 import venkat.org.springframework.springrecipe.domain.Recipe;
 import venkat.org.springframework.springrecipe.mappers.IngredientMapper;
-import venkat.org.springframework.springrecipe.repositories.IngredientRepository;
 import venkat.org.springframework.springrecipe.repositories.RecipeRepository;
 import venkat.org.springframework.springrecipe.repositories.UnitOfMeasureRepository;
 
@@ -18,7 +17,6 @@ import java.util.Optional;
 @Slf4j
 public class IngredientServiceImpl implements IngredientService {
 
-    private final IngredientRepository ingredientRepository;
     private final RecipeRepository recipeRepository;
     private final UnitOfMeasureRepository unitOfMeasureRepository;
     private final IngredientMapper ingredientMapper = new IngredientMapper();
@@ -118,8 +116,6 @@ public class IngredientServiceImpl implements IngredientService {
 
             if(ingredientOptional.isPresent()){
                 log.debug("found Ingredient");
-                Ingredient ingredientToDelete = ingredientOptional.get();
-                // ingredientToDelete.setRecipe(null);
                 recipe.getIngredients().remove(ingredientOptional.get());
                 recipeRepository.save(recipe);
             }
