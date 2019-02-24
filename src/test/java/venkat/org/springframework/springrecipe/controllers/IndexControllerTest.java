@@ -16,6 +16,7 @@ import venkat.org.springframework.springrecipe.command.RecipeCommand;
 import venkat.org.springframework.springrecipe.services.RecipeService;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.mockito.Mockito.*;
@@ -67,8 +68,8 @@ public class IndexControllerTest {
         Assert.assertThat(indexController.getIndexPage(model), Matchers.equalToIgnoringCase("index"));
         verify(recipeService,times(1)).getAllRecipes();
 
-        ArgumentCaptor<Flux<RecipeCommand>> argumentCaptor = ArgumentCaptor.forClass(Flux.class);
+        ArgumentCaptor<List<RecipeCommand>> argumentCaptor = ArgumentCaptor.forClass(List.class);
         verify(model,times(1)).addAttribute(eq("recipes"),argumentCaptor.capture());
-        Assert.assertEquals(2, argumentCaptor.getValue().collectList().block().size());
+        Assert.assertEquals(2, argumentCaptor.getValue().size());
     }
 }

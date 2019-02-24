@@ -124,6 +124,7 @@ public class RecipeServiceImplTest {
     public void deleteRecipe() {
         //given
         String id = "1000";
+        when(recipeRepository.deleteById(anyString())).thenReturn(Mono.empty());
         //when
         recipeService.deleteRecipe(id);
         //then

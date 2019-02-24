@@ -3,8 +3,9 @@ package venkat.org.springframework.springrecipe.services;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import reactor.core.publisher.Mono;
 import venkat.org.springframework.springrecipe.domain.Recipe;
-import venkat.org.springframework.springrecipe.repositories.RecipeRepository;
+import venkat.org.springframework.springrecipe.repositories.reactive.RecipeReactiveRepository;
 
 import java.io.IOException;
 
@@ -12,24 +13,35 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class ImageServiceImpl implements ImageService {
 
-    private final RecipeRepository recipeRepository;
+    private final RecipeReactiveRepository recipeRepository;
 
     @Override
-    public void saveImageFile(String recipeId, MultipartFile file) {
-        Recipe recipe = recipeRepository.findById(recipeId).orElse(null);
-        if (recipe != null) {
-            try {
-                byte[] primitiveBytes = file.getBytes();
-                Byte[] wrapperBytes = new Byte[primitiveBytes.length];
-                int i = 0;
-                for (byte b : primitiveBytes) {
-                    wrapperBytes[i++] = b;
-                }
-                recipe.setImage(wrapperBytes);
-                recipeRepository.save(recipe);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+    public Mono<Void> saveImageFile(String recipeId, MultipartFile file) {
+
+        Mono<Recipe> recipeMono = recipeRepository.findById(recipeId)
+                .map(recipe -> {
+                    Byte[] byteObjects = new Byte[0];
+                    try {
+                        byteObjects = new Byte[file.getBytes().length];
+
+                        int i = 0;
+
+                        for (byte b : file.getBytes()) {
+                            byteObjects[i++] = b;
+                        }
+
+                        recipe.setImage(byteObjects);
+
+                        return recipe;
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        throw new RuntimeException(e);
+                    }
+                });
+
+        recipeRepository.save(recipeMono.block()).block();
+
+        return Mono.empty();
     }
 }

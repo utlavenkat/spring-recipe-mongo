@@ -62,7 +62,7 @@ public class RecipeController {
     @RequestMapping(method = RequestMethod.GET, path = "/{id}/delete")
     public String deleteRecipe(@PathVariable final String id) {
         log.info("Delete Recipe, Input Recipe ID::" + id);
-        recipeService.deleteRecipe(id).block();
+        recipeService.deleteRecipe(id);
         return "redirect:/" + VIEW_NAME_INDEX;
     }
 
