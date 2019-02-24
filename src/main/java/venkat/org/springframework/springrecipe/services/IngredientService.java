@@ -1,12 +1,13 @@
 package venkat.org.springframework.springrecipe.services;
 
+import reactor.core.publisher.Mono;
 import venkat.org.springframework.springrecipe.command.IngredientCommand;
 
 public interface IngredientService {
 
-    IngredientCommand save(IngredientCommand ingredientCommand);
+    Mono<IngredientCommand> save(IngredientCommand ingredientCommand);
 
-    IngredientCommand findByRecipeIdAndIngredientId(String recipeId, String ingredientId);
+    Mono<IngredientCommand> findByRecipeIdAndIngredientId(String recipeId, String ingredientId);
 
-    void deleteById(final String recipeId,final String id);
+    Mono<Void> deleteById(final String recipeId,final String id);
 }

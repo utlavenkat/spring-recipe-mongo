@@ -9,6 +9,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import venkat.org.springframework.springrecipe.command.IngredientCommand;
 import venkat.org.springframework.springrecipe.command.RecipeCommand;
 import venkat.org.springframework.springrecipe.command.UnitOfMeasureCommand;
@@ -74,7 +75,7 @@ public class IngredientControllerTest {
         Long id = 1L;
 
         //When
-        when(ingredientService.findByRecipeIdAndIngredientId(anyString(),anyString())).thenReturn(IngredientCommand.builder().id("1").build());
+        when(ingredientService.findByRecipeIdAndIngredientId(anyString(),anyString())).thenReturn(Mono.just(IngredientCommand.builder().id("1").build()));
         ResultActions resultActions = mockMvc.perform(get("/recipe/1234/ingredient/" + id + "/view"));
 
         //Then
@@ -89,8 +90,8 @@ public class IngredientControllerTest {
     public void editIngredientById() throws Exception {
         //Given
         Long id = 1L;
-        when(ingredientService.findByRecipeIdAndIngredientId(anyString(),anyString())).thenReturn(IngredientCommand.builder().id("1")
-                .description("Tomato").amount(BigDecimal.ONE).build());
+        when(ingredientService.findByRecipeIdAndIngredientId(anyString(),anyString())).thenReturn(Mono.just(IngredientCommand.builder().id("1")
+                .description("Tomato").amount(BigDecimal.ONE).build()));
 
         UnitOfMeasureCommand uom1 = UnitOfMeasureCommand.builder().id("1").uom("TableSpoon").build();
         UnitOfMeasureCommand uom2 = UnitOfMeasureCommand.builder().id("2").uom("Cup").build();
@@ -117,7 +118,7 @@ public class IngredientControllerTest {
         ObjectMapper mapper = new ObjectMapper();
         String jsonInString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(ingredientCommand);
         ingredientCommand.setId("100");
-        when(ingredientService.save(any(IngredientCommand.class))).thenReturn(ingredientCommand);
+        when(ingredientService.save(any(IngredientCommand.class))).thenReturn(Mono.just(ingredientCommand));
 
         //when
         ResultActions resultActions = mockMvc.perform(post("/recipe/ingredient").param("recipeId","1234").content(jsonInString));
