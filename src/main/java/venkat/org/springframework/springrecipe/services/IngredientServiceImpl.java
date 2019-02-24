@@ -8,9 +8,8 @@ import venkat.org.springframework.springrecipe.command.IngredientCommand;
 import venkat.org.springframework.springrecipe.domain.Ingredient;
 import venkat.org.springframework.springrecipe.domain.Recipe;
 import venkat.org.springframework.springrecipe.mappers.IngredientMapper;
-import venkat.org.springframework.springrecipe.repositories.RecipeRepository;
-import venkat.org.springframework.springrecipe.repositories.UnitOfMeasureRepository;
 import venkat.org.springframework.springrecipe.repositories.reactive.RecipeReactiveRepository;
+import venkat.org.springframework.springrecipe.repositories.reactive.UnitOfMeasureReactiveRepository;
 
 import java.util.Optional;
 
@@ -19,9 +18,8 @@ import java.util.Optional;
 @Slf4j
 public class IngredientServiceImpl implements IngredientService {
 
-    private final RecipeRepository recipeRepository;
     private final RecipeReactiveRepository recipeReactiveRepository;
-    private final UnitOfMeasureRepository unitOfMeasureRepository;
+    private final UnitOfMeasureReactiveRepository unitOfMeasureRepository;
     private final IngredientMapper ingredientMapper = new IngredientMapper();
 
     @Override
@@ -42,16 +40,14 @@ public class IngredientServiceImpl implements IngredientService {
     @Override
     public Mono<IngredientCommand> save(IngredientCommand command) {
 
-        Optional<Recipe> recipeOptional = recipeRepository.findById(command.getRecipeId());
+       Recipe recipe = recipeReactiveRepository.findById(command.getRecipeId()).block();
 
-        if(!recipeOptional.isPresent()){
+        if(recipe == null){
 
             //todo toss error if not found!
             log.error("Recipe not found for id: " + command.getRecipeId());
             return  Mono.just(new IngredientCommand());
         } else {
-            Recipe recipe = recipeOptional.get();
-
             Optional<Ingredient> ingredientOptional = recipe
                     .getIngredients()
                     .stream()
@@ -63,8 +59,10 @@ public class IngredientServiceImpl implements IngredientService {
                 ingredientFound.setDescription(command.getDescription());
                 ingredientFound.setAmount(command.getAmount());
                 ingredientFound.setUnitOfMeasure(unitOfMeasureRepository
-                        .findById(command.getUnitOfMeasure().getId())
-                        .orElseThrow(() -> new RuntimeException("UOM NOT FOUND"))); //todo address this
+                        .findById(command.getUnitOfMeasure().getId()).block()); //todo address this
+                if (ingredientFound.getUnitOfMeasure() == null) {
+                    new RuntimeException("UOM NOT FOUND");
+                }
             } else {
                 //add new Ingredient
                 Ingredient ingredient = ingredientMapper.convertCommandToDomain(command);
@@ -96,10 +94,9 @@ public class IngredientServiceImpl implements IngredientService {
 
         log.debug("Deleting ingredient: " + recipeId + ":" + idToDelete);
 
-        Optional<Recipe> recipeOptional = recipeRepository.findById(recipeId);
+        Recipe recipe = recipeReactiveRepository.findById(recipeId).block();
 
-        if(recipeOptional.isPresent()){
-            Recipe recipe = recipeOptional.get();
+        if(recipe != null ){
             log.debug("found recipe");
 
             Optional<Ingredient> ingredientOptional = recipe
@@ -111,7 +108,7 @@ public class IngredientServiceImpl implements IngredientService {
             if(ingredientOptional.isPresent()){
                 log.debug("found Ingredient");
                 recipe.getIngredients().remove(ingredientOptional.get());
-                recipeRepository.save(recipe);
+                recipeReactiveRepository.save(recipe).block();
             }
         } else {
             log.debug("Recipe Id Not found. Id:" + recipeId);
