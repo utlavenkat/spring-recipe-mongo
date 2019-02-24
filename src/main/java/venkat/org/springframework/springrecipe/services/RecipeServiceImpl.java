@@ -9,9 +9,6 @@ import venkat.org.springframework.springrecipe.mappers.RecipeMapper;
 
 import venkat.org.springframework.springrecipe.repositories.reactive.RecipeReactiveRepository;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @Service
 @RequiredArgsConstructor
 public class RecipeServiceImpl implements RecipeService {
@@ -24,9 +21,7 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     public Flux<RecipeCommand> getAllRecipes() {
-        Set<RecipeCommand> recipes = new HashSet<>();
-        recipeRepository.findAll().collectList().block().forEach(recipe -> recipes.add(recipeMapper.convertDomainToCommand(recipe)));
-        return Flux.fromIterable(recipes);
+        return recipeRepository.findAll().map(recipe -> recipeMapper.convertDomainToCommand(recipe));
     }
 
     public Mono<RecipeCommand> findRecipeById(final String id) {

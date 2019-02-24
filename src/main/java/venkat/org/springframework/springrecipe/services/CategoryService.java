@@ -1,7 +1,8 @@
 package venkat.org.springframework.springrecipe.services;
 
+import reactor.core.publisher.Mono;
 import venkat.org.springframework.springrecipe.command.CategoryCommand;
 
 public interface CategoryService {
-    CategoryCommand getByCategoryName(String categoryName);
+    Mono<CategoryCommand> getByCategoryName(String categoryName);
 }

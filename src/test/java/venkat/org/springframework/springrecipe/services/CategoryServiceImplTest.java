@@ -7,9 +7,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import reactor.core.publisher.Mono;
 import venkat.org.springframework.springrecipe.command.CategoryCommand;
 import venkat.org.springframework.springrecipe.domain.Category;
 import venkat.org.springframework.springrecipe.repositories.CategoryRepository;
+import venkat.org.springframework.springrecipe.repositories.reactive.CategoryReactiveRepository;
 
 import java.util.Optional;
 
@@ -22,7 +24,7 @@ public class CategoryServiceImplTest {
     private CategoryService categoryService;
 
     @Mock
-    private CategoryRepository categoryRepository;
+    private CategoryReactiveRepository categoryRepository;
 
     @Before
     public void setUp() {
@@ -44,19 +46,12 @@ public class CategoryServiceImplTest {
         mockedCategory.setCategoryName(categoryName);
 
         Assert.assertNotNull(categoryService);
-        when(categoryRepository.findByCategoryName(categoryName)).thenReturn(Optional.of(mockedCategory));
-        CategoryCommand category = categoryService.getByCategoryName(categoryName);
+        when(categoryRepository.findByCategoryName(categoryName)).thenReturn(Mono.just(mockedCategory));
+        CategoryCommand category = categoryService.getByCategoryName(categoryName).block();
         Assert.assertNotNull(category);
         Assert.assertNotNull(category.getId());
         assertEquals(mockedCategory.getId(),category.getId());
         Assert.assertEquals(mockedCategory.getCategoryName(),category.getCategoryName());
 
-    }
-
-    @Test
-    public void testGetByCategoryName_Invalid() {
-        val categoryName = "doesnotexists";
-        when(categoryRepository.findByCategoryName(categoryName)).thenReturn(Optional.empty());
-        Assert.assertNull(categoryService.getByCategoryName(categoryName));
     }
 }
