@@ -12,12 +12,12 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import reactor.core.publisher.Mono;
 import venkat.org.springframework.springrecipe.command.DifficultyCommand;
 import venkat.org.springframework.springrecipe.command.RecipeCommand;
 import venkat.org.springframework.springrecipe.exceptions.NotFoundException;
 import venkat.org.springframework.springrecipe.services.RecipeService;
 
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -55,7 +55,7 @@ public class RecipeControllerTest {
     public void viewRecipe() throws Exception {
         //Given
         RecipeCommand recipe = RecipeCommand.builder().id("1").description("Test Recipe").build();
-        when(recipeService.findRecipeById(anyString())).thenReturn(recipe);
+        when(recipeService.findRecipeById(anyString())).thenReturn(Mono.just(recipe));
 
         //when
         ResultActions resultActions = mockMvc.perform(get("/recipe/{id}/view", 1));
@@ -75,7 +75,7 @@ public class RecipeControllerTest {
     public void viewRecipe_NumberFormatException() throws Exception {
         //Given
         RecipeCommand recipe = RecipeCommand.builder().id("1").description("Test Recipe").build();
-        when(recipeService.findRecipeById(anyString())).thenReturn(recipe);
+        when(recipeService.findRecipeById(anyString())).thenReturn(Mono.just(recipe));
 
         //when
         ResultActions resultActions = mockMvc.perform(get("/recipe/{id}/view", "abc"));
@@ -107,7 +107,7 @@ public class RecipeControllerTest {
     public void editRecipeForm() throws Exception {
         //Given
         RecipeCommand recipe = RecipeCommand.builder().id("1").description("Test Recipe").build();
-        when(recipeService.findRecipeById(anyString())).thenReturn(recipe);
+        when(recipeService.findRecipeById(anyString())).thenReturn(Mono.just(recipe));
 
         //when
         ResultActions resultActions = mockMvc.perform(get("/recipe/{id}/edit", 1));
@@ -147,7 +147,7 @@ public class RecipeControllerTest {
         String jsonInString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(inputRecipeCommand);
         System.out.println(jsonInString);
         inputRecipeCommand.setId("100");
-        when(recipeService.saveRecipe(any(RecipeCommand.class))).thenReturn(inputRecipeCommand);
+        when(recipeService.saveRecipe(any(RecipeCommand.class))).thenReturn(Mono.just(inputRecipeCommand));
 
         //when
         ResultActions resultActions = mockMvc.perform(post("/recipe")
@@ -172,7 +172,7 @@ public class RecipeControllerTest {
         String jsonInString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(inputRecipeCommand);
         System.out.println(jsonInString);
         inputRecipeCommand.setId("100");
-        when(recipeService.saveRecipe(any(RecipeCommand.class))).thenReturn(inputRecipeCommand);
+        when(recipeService.saveRecipe(any(RecipeCommand.class))).thenReturn(Mono.just(inputRecipeCommand));
 
         //when
         ResultActions resultActions = mockMvc.perform(post("/recipe")

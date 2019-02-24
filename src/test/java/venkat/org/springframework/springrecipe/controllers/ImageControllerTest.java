@@ -9,12 +9,12 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import reactor.core.publisher.Mono;
 import venkat.org.springframework.springrecipe.command.RecipeCommand;
 import venkat.org.springframework.springrecipe.services.ImageService;
 import venkat.org.springframework.springrecipe.services.RecipeService;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -48,7 +48,7 @@ public class ImageControllerTest {
         //Given
         RecipeCommand recipeCommand = RecipeCommand.builder().id("1").build();
 
-        when(recipeService.findRecipeById(anyString())).thenReturn(recipeCommand);
+        when(recipeService.findRecipeById(anyString())).thenReturn(Mono.just(recipeCommand));
 
         //when
         ResultActions resultActions = mockMvc.perform(get("/recipe/1/image"));
@@ -88,7 +88,7 @@ public class ImageControllerTest {
         }
         RecipeCommand recipeCommand = RecipeCommand.builder().id("1").image(byteArray).build();
 
-        when(recipeService.findRecipeById(anyString())).thenReturn(recipeCommand);
+        when(recipeService.findRecipeById(anyString())).thenReturn(Mono.just(recipeCommand));
 
         //when
         MockHttpServletResponse servletResponse = mockMvc.perform(get("/recipe/1/recipeImage"))

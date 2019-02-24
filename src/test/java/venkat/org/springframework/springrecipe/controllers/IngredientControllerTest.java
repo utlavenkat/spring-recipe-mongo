@@ -56,7 +56,7 @@ public class IngredientControllerTest {
         //Given
         String recipeId = "1";
         RecipeCommand recipeCommand = RecipeCommand.builder().id(recipeId).build();
-        when(recipeService.findRecipeById(recipeId)).thenReturn(recipeCommand);
+        when(recipeService.findRecipeById(recipeId)).thenReturn(Mono.just(recipeCommand));
 
         //when
         ResultActions resultActions = mockMvc.perform(get("/recipe/" + recipeId + "/ingredients"));
@@ -156,7 +156,7 @@ public class IngredientControllerTest {
         //Given
         final String recipeId = "1";
         final Long ingredientId = 1L;
-        when(recipeService.findRecipeById(anyString())).thenReturn(RecipeCommand.builder().id(recipeId).build());
+        when(recipeService.findRecipeById(anyString())).thenReturn(Mono.just(RecipeCommand.builder().id(recipeId).build()));
 
         //when
         ResultActions resultActions = mockMvc.perform(get("/recipe/" + recipeId + "/ingredient/"

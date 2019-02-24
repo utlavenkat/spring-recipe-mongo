@@ -7,11 +7,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import venkat.org.springframework.springrecipe.command.*;
 import venkat.org.springframework.springrecipe.domain.Recipe;
-import venkat.org.springframework.springrecipe.exceptions.NotFoundException;
 import venkat.org.springframework.springrecipe.mappers.RecipeMapper;
-import venkat.org.springframework.springrecipe.repositories.RecipeRepository;
+import venkat.org.springframework.springrecipe.repositories.reactive.RecipeReactiveRepository;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -27,7 +28,7 @@ public class RecipeServiceImplTest {
     private RecipeMapper recipeMapper;
 
     @Mock
-    private RecipeRepository recipeRepository;
+    private RecipeReactiveRepository recipeRepository;
 
     @Before
     public  void  setUp() {
@@ -64,9 +65,9 @@ public class RecipeServiceImplTest {
         recipe.setCategories(categorySet);
         recipe.getIngredients().iterator().next().setId("1234");
 
-        when(recipeRepository.save(any(Recipe.class))).thenReturn(recipeMapper.convertCommandToDomain(recipe));
+        when(recipeRepository.save(any(Recipe.class))).thenReturn(Mono.just(recipeMapper.convertCommandToDomain(recipe)));
 
-        RecipeCommand savedRecipe = recipeService.saveRecipe(recipe);
+        RecipeCommand savedRecipe = recipeService.saveRecipe(recipe).block();
 
         Assert.assertNotNull(savedRecipe);
         Assert.assertNotNull(savedRecipe.getId());
@@ -101,30 +102,22 @@ public class RecipeServiceImplTest {
         mockedRecipeSet.add(recipe1);
         mockedRecipeSet.add(recipe2);
 
-        when(recipeRepository.findAll()).thenReturn(mockedRecipeSet);
+        when(recipeRepository.findAll()).thenReturn(Flux.fromIterable(mockedRecipeSet));
 
-        Set<RecipeCommand> recipeSet = recipeService.getAllRecipes();
-        Assert.assertNotNull(recipeSet);
+        List<RecipeCommand> recipeSet = recipeService.getAllRecipes().collectList().block();
+        //Assert.assertNotNull(recipeSet);
         assertEquals(2, recipeSet.size());
     }
 
     @Test
     public void findRecipeById() {
         String id = anyString();
-        when(recipeRepository.findById(id)).thenReturn(Optional.of(Recipe.builder().id(id).build()));
-        val recipe = recipeService.findRecipeById("1");
+        when(recipeRepository.findById(id)).thenReturn(Mono.just(Recipe.builder().id(id).build()));
+        val recipe = recipeService.findRecipeById("1").block();
         assertNotNull("Recipe should not be null", recipe);
         assertNotNull("Recipe ID should not be null", recipe.getId());
         assertEquals("Id value is not matching", id, recipe.getId());
         verify(recipeRepository, times(1)).findById(anyString());
-    }
-
-    @Test(expected = NotFoundException.class)
-    public void findRecipeById_Invalid() {
-        String id = anyString();
-        when(recipeRepository.findById(id)).thenReturn(Optional.empty());
-        RecipeCommand recipe = recipeService.findRecipeById(id);
-        verify(recipeRepository, times(1)).findById(id);
     }
 
     @Test

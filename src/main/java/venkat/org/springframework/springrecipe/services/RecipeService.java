@@ -1,15 +1,15 @@
 package venkat.org.springframework.springrecipe.services;
 
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import venkat.org.springframework.springrecipe.command.RecipeCommand;
 
-import java.util.Set;
-
 public interface RecipeService {
-    RecipeCommand saveRecipe(final RecipeCommand recipe);
+    Mono<RecipeCommand> saveRecipe(final RecipeCommand recipe);
 
-    Set<RecipeCommand> getAllRecipes();
+    Flux<RecipeCommand> getAllRecipes();
 
-    RecipeCommand findRecipeById(final String id);
+    Mono<RecipeCommand> findRecipeById(final String id);
 
-    void deleteRecipe(final String id);
+    Mono<Void> deleteRecipe(final String id);
 }

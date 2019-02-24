@@ -1,46 +1,49 @@
 package venkat.org.springframework.springrecipe.services;
 
 import lombok.RequiredArgsConstructor;
-import lombok.val;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import venkat.org.springframework.springrecipe.command.RecipeCommand;
-import venkat.org.springframework.springrecipe.domain.Recipe;
-import venkat.org.springframework.springrecipe.exceptions.NotFoundException;
 import venkat.org.springframework.springrecipe.mappers.RecipeMapper;
-import venkat.org.springframework.springrecipe.repositories.RecipeRepository;
+
+import venkat.org.springframework.springrecipe.repositories.reactive.RecipeReactiveRepository;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class RecipeServiceImpl implements RecipeService {
-    private final RecipeRepository recipeRepository;
+    private final RecipeReactiveRepository recipeRepository;
     private final RecipeMapper recipeMapper = new RecipeMapper();
 
 
-    public RecipeCommand saveRecipe(final RecipeCommand recipeCommand) {
-        val savedRecipe = recipeRepository.save(recipeMapper.convertCommandToDomain(recipeCommand));
-        return recipeMapper.convertDomainToCommand(savedRecipe);
+    public Mono<RecipeCommand> saveRecipe(final RecipeCommand recipeCommand) {
+        return recipeRepository.save(recipeMapper.convertCommandToDomain(recipeCommand)).map(recipeMapper::convertDomainToCommand);
     }
 
-    public Set<RecipeCommand> getAllRecipes() {
+    public Flux<RecipeCommand> getAllRecipes() {
         Set<RecipeCommand> recipes = new HashSet<>();
-        recipeRepository.findAll().forEach(recipe -> recipes.add(recipeMapper.convertDomainToCommand(recipe)));
-        return recipes;
+        recipeRepository.findAll().collectList().block().forEach(recipe -> recipes.add(recipeMapper.convertDomainToCommand(recipe)));
+        return Flux.fromIterable(recipes);
     }
 
-    public RecipeCommand findRecipeById(final String id) {
-        Optional<Recipe> recipe = recipeRepository.findById(id);
-        if (!recipe.isPresent()) {
-            throw new NotFoundException("Recipe not found for the ID value: " + id);
-        }
-        return recipeMapper.convertDomainToCommand(recipe.get());
+    public Mono<RecipeCommand> findRecipeById(final String id) {
+        return recipeRepository.findById(id).map(recipe -> {
+            RecipeCommand recipeCommand = recipeMapper.convertDomainToCommand(recipe);
+            if(recipeCommand.getIngredients() != null) {
+                recipeCommand.getIngredients().forEach(ingredientCommand ->
+                        ingredientCommand.setRecipeId(recipeCommand.getId()));
+            }
+            return recipeCommand;
+        });
     }
 
     @Override
-    public void deleteRecipe(String id) {
-        recipeRepository.deleteById(id);
+    public Mono<Void> deleteRecipe(String id) {
+
+        recipeRepository.deleteById(id).block();
+        return Mono.empty();
     }
 }

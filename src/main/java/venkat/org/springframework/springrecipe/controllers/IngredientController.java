@@ -33,7 +33,7 @@ public class IngredientController {
     @RequestMapping(path = "/recipe/{recipeId}/ingredients")
     public String getRecipeIngredients(@PathVariable final String recipeId, final Model model) {
         log.info("Get Recipe Ingredients. Recipe Id::" + recipeId);
-        model.addAttribute("recipe", recipeService.findRecipeById(recipeId));
+        model.addAttribute("recipe", recipeService.findRecipeById(recipeId).block());
         return VIEW_NAME_INGREDIENT_LIST;
     }
 
@@ -76,7 +76,7 @@ public class IngredientController {
     public String deleteIngredientById(@PathVariable final String recipeId, @PathVariable final String id, final Model model) {
         log.info("deleteIngredientById() Input Ingredient ID::" + id);
         ingredientService.deleteById(recipeId,id);
-        model.addAttribute("recipe", recipeService.findRecipeById(recipeId));
+        model.addAttribute("recipe", recipeService.findRecipeById(recipeId).block());
         return "redirect:/recipe/" + recipeId + "/ingredients";
     }
 

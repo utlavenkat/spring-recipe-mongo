@@ -30,14 +30,14 @@ public class RecipeController {
     @RequestMapping(method = RequestMethod.GET, path = "/{id}/view")
     public String viewRecipe(@PathVariable final String id, final Model model) {
         log.info("Input recipe id::" + id);
-        model.addAttribute("recipe", recipeService.findRecipeById(id));
+        model.addAttribute("recipe", recipeService.findRecipeById(id).block());
         return VIEW_NAME_RECIPE_SHOW;
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/{id}/edit")
     public String editRecipe(@PathVariable final String id, final Model model) {
         log.info("Input recipe id::" + id);
-        model.addAttribute("recipe", recipeService.findRecipeById(id));
+        model.addAttribute("recipe", recipeService.findRecipeById(id).block());
         return VIEW_NAME_RECIPE_FORM;
     }
 
@@ -54,7 +54,7 @@ public class RecipeController {
             bindingResult.getAllErrors().forEach(objectError -> log.debug(objectError.toString()));
             return VIEW_NAME_RECIPE_FORM;
         }
-        val savedRecipe = recipeService.saveRecipe(recipeCommand);
+        val savedRecipe = recipeService.saveRecipe(recipeCommand).block();
         log.info("Saved Recipe ::" + savedRecipe);
         return "redirect:/recipe/" + savedRecipe.getId() + "/view";
     }
@@ -62,7 +62,7 @@ public class RecipeController {
     @RequestMapping(method = RequestMethod.GET, path = "/{id}/delete")
     public String deleteRecipe(@PathVariable final String id) {
         log.info("Delete Recipe, Input Recipe ID::" + id);
-        recipeService.deleteRecipe(id);
+        recipeService.deleteRecipe(id).block();
         return "redirect:/" + VIEW_NAME_INDEX;
     }
 

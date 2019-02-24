@@ -14,7 +14,6 @@ import venkat.org.springframework.springrecipe.domain.Ingredient;
 import venkat.org.springframework.springrecipe.domain.Recipe;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -62,7 +61,7 @@ public class RecipeMapper {
 
     public RecipeCommand convertDomainToCommand(final Recipe recipe) {
 
-        log.debug("Converting recipe domain to command");
+        log.info("Converting recipe domain to command");
         val recipeCommand = RecipeCommand.builder().id(recipe.getId()).directions(recipe.getDirections())
                 .cookTime(recipe.getCookTime()).description(recipe.getDescription()).prepTime(recipe.getPrepTime())
                 .servings(recipe.getServings()).source(recipe.getSource()).url(recipe.getUrl())
