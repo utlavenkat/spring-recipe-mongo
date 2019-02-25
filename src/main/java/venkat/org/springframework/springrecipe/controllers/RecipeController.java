@@ -7,8 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
+
+import org.thymeleaf.exceptions.TemplateInputException;
 import venkat.org.springframework.springrecipe.command.RecipeCommand;
 import venkat.org.springframework.springrecipe.exceptions.NotFoundException;
 import venkat.org.springframework.springrecipe.services.RecipeService;
@@ -26,11 +28,12 @@ public class RecipeController {
     private static final String VIEW_NAME_INDEX = "index";
     private static final String VIEW_NAME_ERROR_PAGE_404 = "errorpages/404";
     private final RecipeService recipeService;
+    private WebDataBinder webDataBinder;
 
     @RequestMapping(method = RequestMethod.GET, path = "/{id}/view")
     public String viewRecipe(@PathVariable final String id, final Model model) {
         log.info("Input recipe id::" + id);
-        model.addAttribute("recipe", recipeService.findRecipeById(id).block());
+        model.addAttribute("recipe", recipeService.findRecipeById(id));
         return VIEW_NAME_RECIPE_SHOW;
     }
 
@@ -48,8 +51,15 @@ public class RecipeController {
         return VIEW_NAME_RECIPE_FORM;
     }
 
+    @InitBinder
+    public void initBinder(WebDataBinder webDataBinder) {
+        this.webDataBinder = webDataBinder;
+    }
+
     @RequestMapping(method = RequestMethod.POST)
-    public String saveRecipe(@Valid @ModelAttribute("recipe") RecipeCommand recipeCommand, BindingResult bindingResult) {
+    public String saveRecipe(@ModelAttribute("recipe") RecipeCommand recipeCommand) {
+        webDataBinder.validate();
+        BindingResult bindingResult = webDataBinder.getBindingResult();
         if (bindingResult.hasErrors()) {
             bindingResult.getAllErrors().forEach(objectError -> log.debug(objectError.toString()));
             return VIEW_NAME_RECIPE_FORM;
@@ -67,12 +77,10 @@ public class RecipeController {
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(NotFoundException.class)
-    public ModelAndView handleNotFoundException(Exception ex) {
+    @ExceptionHandler({NotFoundException.class, TemplateInputException.class})
+    public String handleNotFoundException(Exception ex,Model model) {
         log.error("Exception occurred. Root Cause is ::" + ex.getMessage());
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName(VIEW_NAME_ERROR_PAGE_404);
-        modelAndView.addObject("exception", ex);
-        return modelAndView;
+        model.addAttribute("exception", ex);
+        return VIEW_NAME_ERROR_PAGE_404;
     }
 }

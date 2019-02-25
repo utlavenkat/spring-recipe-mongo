@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import reactor.core.publisher.Flux;
 import venkat.org.springframework.springrecipe.command.IngredientCommand;
 import venkat.org.springframework.springrecipe.command.UnitOfMeasureCommand;
 import venkat.org.springframework.springrecipe.services.IngredientService;
@@ -33,25 +34,21 @@ public class IngredientController {
     @RequestMapping(path = "/recipe/{recipeId}/ingredients")
     public String getRecipeIngredients(@PathVariable final String recipeId, final Model model) {
         log.info("Get Recipe Ingredients. Recipe Id::" + recipeId);
-        model.addAttribute("recipe", recipeService.findRecipeById(recipeId).block());
+        model.addAttribute("recipe", recipeService.findRecipeById(recipeId));
         return VIEW_NAME_INGREDIENT_LIST;
     }
 
     @RequestMapping(path = "/recipe/{recipeId}/ingredient/{id}/view")
     public String getIngredientById(@PathVariable String recipeId, @PathVariable final String id, final Model model) {
         log.info("getIngredientById, Input Id::" + id);
-        model.addAttribute("ingredient", ingredientService.findByRecipeIdAndIngredientId(recipeId,id).block());
+        model.addAttribute("ingredient", ingredientService.findByRecipeIdAndIngredientId(recipeId,id));
         return VIEW_NAME_INGREDIENT_SHOW;
     }
 
     @RequestMapping(path = "/recipe/{recipeId}/ingredient/{id}/edit")
     public String editIngredientById(@PathVariable String recipeId, @PathVariable final String id, final Model model) {
         log.info("editIngredientById() Input Id::" + id);
-        IngredientCommand ingredientCommand = ingredientService.findByRecipeIdAndIngredientId(recipeId,id).block();
-        ingredientCommand.setRecipeId(recipeId);
-        model.addAttribute("ingredient", ingredientCommand);
-        model.addAttribute("uomList", unitOfMeasureService.getAllUnitOfMeasures().collectList().block());
-        log.info(" Ingredient Object::" + ingredientCommand);
+        model.addAttribute("ingredient", ingredientService.findByRecipeIdAndIngredientId(recipeId,id).block());
         return VIEW_NAME_INGREDIENT_FORM;
     }
 
@@ -68,7 +65,6 @@ public class IngredientController {
         final IngredientCommand ingredientCommand = IngredientCommand.builder().recipeId(id)
                 .unitOfMeasure(UnitOfMeasureCommand.builder().build()).build();
         model.addAttribute("ingredient", ingredientCommand);
-        model.addAttribute("uomList", unitOfMeasureService.getAllUnitOfMeasures().collectList().block());
         return VIEW_NAME_INGREDIENT_FORM;
     }
 
@@ -78,6 +74,11 @@ public class IngredientController {
         ingredientService.deleteById(recipeId,id);
         model.addAttribute("recipe", recipeService.findRecipeById(recipeId).block());
         return "redirect:/recipe/" + recipeId + "/ingredients";
+    }
+
+    @ModelAttribute("uomList")
+    public Flux<UnitOfMeasureCommand> populateUomList() {
+        return unitOfMeasureService.getAllUnitOfMeasures();
     }
 
 }

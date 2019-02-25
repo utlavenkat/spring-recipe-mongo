@@ -4,7 +4,7 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document("unit_of_measure")
+@Document
 @Getter
 @Setter
 @NoArgsConstructor

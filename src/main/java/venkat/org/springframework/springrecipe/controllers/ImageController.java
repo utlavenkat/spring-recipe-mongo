@@ -2,7 +2,6 @@ package venkat.org.springframework.springrecipe.controllers;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,14 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-import venkat.org.springframework.springrecipe.command.RecipeCommand;
 import venkat.org.springframework.springrecipe.services.ImageService;
 import venkat.org.springframework.springrecipe.services.RecipeService;
-
-import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 
 @Controller
 @RequiredArgsConstructor
@@ -31,7 +24,7 @@ public class ImageController {
 
     @GetMapping(path = "/recipe/{recipeId}/image")
     public String handleImagePost(@PathVariable final String recipeId, final Model model) {
-        model.addAttribute("recipe", recipeService.findRecipeById(recipeId).block());
+        model.addAttribute("recipe", recipeService.findRecipeById(recipeId));
         return VIEW_NAME_RECIPE_IMAGE_FORM;
     }
 
@@ -41,7 +34,7 @@ public class ImageController {
         return "redirect:/recipe/" + recipeId + "/view";
     }
 
-    @GetMapping(path = "/recipe/{recipeId}/recipeImage")
+    /*@GetMapping(path = "/recipe/{recipeId}/recipeImage")
     public void renderRecipeImage(@PathVariable final String recipeId, HttpServletResponse servletResponse) throws IOException {
         log.info("renderRecipeImage, Input Recipe ID::" + recipeId);
         RecipeCommand recipeCommand = recipeService.findRecipeById(recipeId).block();
@@ -55,5 +48,5 @@ public class ImageController {
             InputStream is = new ByteArrayInputStream(byteArray);
             IOUtils.copy(is, servletResponse.getOutputStream());
         }
-    }
+    }*/
 }

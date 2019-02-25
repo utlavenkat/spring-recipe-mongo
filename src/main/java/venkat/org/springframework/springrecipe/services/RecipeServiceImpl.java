@@ -25,14 +25,16 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     public Mono<RecipeCommand> findRecipeById(final String id) {
-        return recipeRepository.findById(id).map(recipe -> {
-            RecipeCommand recipeCommand = recipeMapper.convertDomainToCommand(recipe);
-            if(recipeCommand.getIngredients() != null) {
-                recipeCommand.getIngredients().forEach(ingredientCommand ->
-                        ingredientCommand.setRecipeId(recipeCommand.getId()));
-            }
-            return recipeCommand;
-        });
+        return recipeRepository.findById(id)
+                .map(recipe -> {
+                    RecipeCommand recipeCommand = recipeMapper.convertDomainToCommand(recipe);
+
+                    recipeCommand.getIngredients().forEach(rc -> {
+                        rc.setRecipeId(recipeCommand.getId());
+                    });
+
+                    return recipeCommand;
+                });
     }
 
     @Override
